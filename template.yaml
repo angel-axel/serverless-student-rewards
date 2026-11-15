@@ -1,0 +1,662 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >-
+  Serverless rewards and events platform for a student community.
+  Cognito (auth) + HTTP API with JWT authorizer + Lambda (Python) +
+  DynamoDB single table with Streams + EventBridge Scheduler + SES.
+  No servers, no pipelines, close to $0 when idle.
+
+# Deploy:
+#   sam build && sam deploy --guided
+#
+# Prerequisite (not created by this template):
+#   - A verified SES domain identity (EmailDomain), out of the SES sandbox.
+#
+# After deploying, upload the frontend:
+#   aws s3 sync site/ s3://<SiteBucketName output>
+
+Parameters:
+  GroupName:
+    Type: String
+    Default: AWS Student Builder Group
+    Description: Display name used for the user pool, the API and the emails.
+  SiteUrl:
+    Type: String
+    Default: ""
+    AllowedPattern: ^(https://[^/]+)?$
+    Description: >-
+      Optional. Custom frontend origin without trailing slash (e.g. https://example.com).
+      Leave empty to use the CloudFront domain created by this stack.
+  EmailDomain:
+    Type: String
+    Description: Domain verified as an SES identity in this region (e.g. example.com).
+  InstitutionalDomain:
+    Type: String
+    Description: Only emails from this domain can sign up (e.g. example.edu).
+  LeaderName:
+    Type: String
+    Description: Name of the group leader, shown on redemption coupons.
+  LeaderEmail:
+    Type: String
+    Description: Mailbox that receives the messages sent to the leader.
+  AuthDomainPrefix:
+    Type: String
+    AllowedPattern: ^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$
+    Description: Prefix for the Cognito login domain. Must be unique in the region.
+  WelcomeBonus:
+    Type: String
+    Default: "true"
+    AllowedValues: ["true", "false"]
+    Description: Grant the welcome points bonus to new members.
+
+Conditions:
+  HasSiteUrl: !Not [!Equals [!Ref SiteUrl, ""]]
+
+Globals:
+  Function:
+    Runtime: python3.13
+    Handler: lambda_function.lambda_handler
+    Architectures: [arm64]
+    MemorySize: 256
+    Timeout: 15
+    Environment:
+      Variables:
+        TABLE_NAME: !Ref Table
+        INSTITUTIONAL_DOMAIN: !Ref InstitutionalDomain
+
+Resources:
+  # ---------------------------------------------------------------- Site
+  # Private bucket for the frontend and the reward images, served only
+  # through CloudFront (origin access control).
+  SiteBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - BucketKeyEnabled: true
+            ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      VersioningConfiguration:
+        Status: Enabled
+      # Reward images are uploaded from the browser with a presigned POST.
+      # Without a custom SiteUrl any origin may send the POST; the presigned
+      # policy (admins only, type and size limits) is still required.
+      CorsConfiguration:
+        CorsRules:
+          - AllowedMethods: [POST]
+            AllowedOrigins: [!If [HasSiteUrl, !Ref SiteUrl, "*"]]
+            AllowedHeaders: ["*"]
+            MaxAge: 3000
+
+  SiteOriginAccessControl:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: !Sub ${AWS::StackName}-site
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  SiteDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        DefaultRootObject: index.html
+        HttpVersion: http2
+        IPV6Enabled: true
+        PriceClass: PriceClass_All
+        Origins:
+          - Id: site
+            DomainName: !GetAtt SiteBucket.RegionalDomainName
+            OriginAccessControlId: !GetAtt SiteOriginAccessControl.Id
+            S3OriginConfig:
+              OriginAccessIdentity: ""
+        DefaultCacheBehavior:
+          TargetOriginId: site
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods: [GET, HEAD]
+          CachedMethods: [GET, HEAD]
+          Compress: true
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6 # AWS managed CachingOptimized
+        CustomErrorResponses:
+          - ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: /error.html
+            ErrorCachingMinTTL: 10
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: true
+
+  SiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref SiteBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: AllowCloudFrontServicePrincipal
+            Effect: Allow
+            Principal: { Service: cloudfront.amazonaws.com }
+            Action: s3:GetObject
+            Resource: !Sub ${SiteBucket.Arn}/*
+            Condition:
+              ArnLike:
+                AWS:SourceArn: !Sub arn:${AWS::Partition}:cloudfront::${AWS::AccountId}:distribution/${SiteDistribution}
+
+  # ---------------------------------------------------------------- Data
+  Table:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      DeletionProtectionEnabled: true
+      AttributeDefinitions:
+        - { AttributeName: PK, AttributeType: S }
+        - { AttributeName: SK, AttributeType: S }
+        - { AttributeName: GSI1PK, AttributeType: S }
+        - { AttributeName: GSI1SK, AttributeType: S }
+      KeySchema:
+        - { AttributeName: PK, KeyType: HASH }
+        - { AttributeName: SK, KeyType: RANGE }
+      GlobalSecondaryIndexes:
+        - IndexName: GSI1
+          KeySchema:
+            - { AttributeName: GSI1PK, KeyType: HASH }
+            - { AttributeName: GSI1SK, KeyType: RANGE }
+          Projection:
+            ProjectionType: ALL
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true
+
+  # ---------------------------------------------------------------- Auth
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      UserPoolName: !Ref GroupName
+      UserPoolTier: ESSENTIALS
+      DeletionProtection: ACTIVE
+      MfaConfiguration: "OFF"
+      UsernameAttributes: [email]
+      AutoVerifiedAttributes: [email]
+      UsernameConfiguration:
+        CaseSensitive: false
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 10
+          RequireLowercase: false
+          RequireUppercase: false
+          RequireNumbers: false
+          RequireSymbols: false
+          TemporaryPasswordValidityDays: 7
+      AccountRecoverySetting:
+        RecoveryMechanisms:
+          - { Name: verified_email, Priority: 1 }
+      EmailConfiguration:
+        EmailSendingAccount: DEVELOPER
+        SourceArn: !Sub arn:${AWS::Partition}:ses:${AWS::Region}:${AWS::AccountId}:identity/${EmailDomain}
+        From: !Sub "${GroupName} <no-reply@${EmailDomain}>"
+      LambdaConfig:
+        PreSignUp: !GetAtt PreSignUpFunction.Arn
+        PostConfirmation: !GetAtt PostConfirmationFunction.Arn
+      VerificationMessageTemplate:
+        DefaultEmailOption: CONFIRM_WITH_CODE
+        EmailSubject: !Sub "Tu código de verificación - ${GroupName}"
+        EmailMessage: !Sub |
+          <div style="background:#F4F6F9;padding:24px;font-family:Arial,sans-serif;color:#16213A">
+            <div style="max-width:520px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #DCE1EA">
+              <div style="background:#16213A;color:#fff;padding:18px 24px;font-weight:bold">${GroupName}</div>
+              <div style="padding:24px">
+                <p style="margin:0 0 16px;color:#4B5563">Usa este código para confirmar tu correo o restablecer tu contraseña:</p>
+                <div style="margin:0 0 20px;padding:16px;background:#FFF7EC;border-left:4px solid #F29111;text-align:center">
+                  <span style="font-size:32px;font-weight:bold;letter-spacing:6px;color:#16213A">{####}</span>
+                </div>
+                <p style="margin:0;color:#4B5563">El código vence en 24 horas. No lo compartas con nadie.</p>
+              </div>
+              <div style="padding:16px 24px;font-size:12px;color:#6B7280;border-top:1px solid #DCE1EA">Si no solicitaste este código, puedes ignorar este correo; tu cuenta sigue segura.</div>
+            </div>
+          </div>
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: false
+        InviteMessageTemplate:
+          EmailSubject: !Sub "Bienvenido a ${GroupName}"
+          EmailMessage: !Sub
+            - |
+              <!doctype html>
+              <html lang="es-MX"><body style="margin:0;padding:24px;background:#F4F6F9;font-family:Arial,sans-serif;color:#16213A">
+                <div style="max-width:520px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #DCE1EA">
+                  <div style="background:#16213A;color:#fff;padding:18px 24px;font-weight:bold">${GroupName}</div>
+                  <div style="padding:24px">
+                    <h1 style="margin:0 0 12px;font-size:22px">¡Bienvenido!</h1>
+                    <p style="margin:0 0 20px;color:#4B5563">Se creó tu cuenta en la plataforma del grupo. Estos son tus datos de acceso:</p>
+                    <table role="presentation" style="width:100%;border-collapse:collapse;margin:0 0 20px;background:#FFF7EC;border-left:4px solid #F29111">
+                      <tr><td style="padding:12px 16px;color:#4B5563;white-space:nowrap"><b>Usuario</b></td><td style="padding:12px 16px 12px 0">{username}</td></tr>
+                      <tr><td style="padding:12px 16px;color:#4B5563;white-space:nowrap"><b>Contraseña temporal</b></td><td style="padding:12px 16px 12px 0;font-family:monospace;font-size:16px">{####}</td></tr>
+                    </table>
+                    <p style="margin:0 0 20px;color:#4B5563">Al iniciar sesión por primera vez te pediremos crear una contraseña nueva. La contraseña temporal vence en 7 días.</p>
+                    <p style="margin:0"><a href="${Site}" style="display:inline-block;background:#F29111;color:#16213A;padding:10px 18px;border-radius:8px;font-weight:bold;text-decoration:none">Iniciar sesión</a></p>
+                  </div>
+                  <div style="padding:16px 24px;font-size:12px;color:#6B7280;border-top:1px solid #DCE1EA">Si no esperabas esta invitación, puedes ignorar este correo.</div>
+                </div>
+              </body></html>
+            - Site: !If [HasSiteUrl, !Ref SiteUrl, !Sub "https://${SiteDistribution.DomainName}"]
+
+  UserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      UserPoolId: !Ref UserPool
+      Domain: !Ref AuthDomainPrefix
+
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref UserPool
+      ClientName: !Ref GroupName
+      GenerateSecret: false
+      SupportedIdentityProviders: [COGNITO]
+      AllowedOAuthFlowsUserPoolClient: true
+      AllowedOAuthFlows: [code]
+      AllowedOAuthScopes: [email, openid, phone]
+      CallbackURLs:
+        - !If [HasSiteUrl, !Ref SiteUrl, !Sub "https://${SiteDistribution.DomainName}"]
+      LogoutURLs:
+        - !If [HasSiteUrl, !Ref SiteUrl, !Sub "https://${SiteDistribution.DomainName}"]
+      DefaultRedirectURI: !If [HasSiteUrl, !Ref SiteUrl, !Sub "https://${SiteDistribution.DomainName}"]
+      ExplicitAuthFlows:
+        - ALLOW_REFRESH_TOKEN_AUTH
+        - ALLOW_USER_AUTH
+        - ALLOW_USER_SRP_AUTH
+      AuthSessionValidity: 3
+      AccessTokenValidity: 60
+      IdTokenValidity: 60
+      RefreshTokenValidity: 5
+      TokenValidityUnits:
+        AccessToken: minutes
+        IdToken: minutes
+        RefreshToken: days
+      EnableTokenRevocation: true
+      PreventUserExistenceErrors: ENABLED
+
+  AdminGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      UserPoolId: !Ref UserPool
+      GroupName: administrador
+
+  MemberGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      UserPoolId: !Ref UserPool
+      GroupName: miembro
+
+  # Cognito triggers
+  PreSignUpFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/cognito_pre_signup/
+
+  PreSignUpPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt PreSignUpFunction.Arn
+      Action: lambda:InvokeFunction
+      Principal: cognito-idp.amazonaws.com
+      SourceArn: !GetAtt UserPool.Arn
+
+  PostConfirmationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/cognito_post_signup/
+      Environment:
+        Variables:
+          OFFICIAL_PRESENTATION: !Ref WelcomeBonus
+      Policies:
+        - Statement:
+            - Sid: ProfileAndWelcomeBonus
+              Effect: Allow
+              Action: [dynamodb:PutItem, dynamodb:UpdateItem]
+              Resource: !GetAtt Table.Arn
+
+  # Kept outside the function role to avoid a circular dependency
+  # (UserPool -> function -> role -> UserPool).
+  PostConfirmationCognitoPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: AddUserToMemberGroup
+      Roles: [!Ref PostConfirmationFunctionRole]
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action: cognito-idp:AdminAddUserToGroup
+            Resource: !GetAtt UserPool.Arn
+
+  PostConfirmationPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt PostConfirmationFunction.Arn
+      Action: lambda:InvokeFunction
+      Principal: cognito-idp.amazonaws.com
+      SourceArn: !GetAtt UserPool.Arn
+
+  # ---------------------------------------------------------------- API
+  HttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      Name: !Ref GroupName
+      CorsConfiguration:
+        AllowOrigins:
+          - !If [HasSiteUrl, !Ref SiteUrl, !Sub "https://${SiteDistribution.DomainName}"]
+        AllowMethods: [GET, POST, PUT, PATCH, DELETE, OPTIONS]
+        AllowHeaders: [authorization, content-type]
+        MaxAge: 900
+      Auth:
+        DefaultAuthorizer: Cognito
+        Authorizers:
+          Cognito:
+            IdentitySource: $request.header.Authorization
+            JwtConfiguration:
+              issuer: !Sub https://cognito-idp.${AWS::Region}.amazonaws.com/${UserPool}
+              audience: [!Ref UserPoolClient]
+
+  EventsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/events/
+      Layers: [!Sub "arn:${AWS::Partition}:lambda:${AWS::Region}:017000801446:layer:AWSLambdaPowertoolsPythonV3-python313-arm64:38"]
+      Policies:
+        - Statement:
+            - Sid: EventsTableAccess
+              Effect: Allow
+              Action: [dynamodb:GetItem, dynamodb:PutItem, dynamodb:UpdateItem]
+              Resource: !GetAtt Table.Arn
+            - Sid: EventsIndexQuery
+              Effect: Allow
+              Action: dynamodb:Query
+              Resource: !Sub ${Table.Arn}/index/GSI1
+      Events:
+        ListEvents:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Method: GET, Path: /events, Auth: { Authorizer: NONE } }
+        GetEvent:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Method: GET, Path: "/events/{event_id}", Auth: { Authorizer: NONE } }
+        GetSubscription:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Method: GET, Path: /me/subscription }
+        PutSubscription:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Method: PUT, Path: /me/subscription }
+        AdminListEvents:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Method: GET, Path: /admin/events }
+        AdminCreateEvent:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Method: POST, Path: /admin/events }
+        AdminUpdateEvent:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Method: PATCH, Path: "/admin/events/{event_id}" }
+        AdminDeleteEvent:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Method: DELETE, Path: "/admin/events/{event_id}" }
+        AdminEventAttendance:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Method: GET, Path: "/admin/events/{event_id}/attendance" }
+        AdminRegisterAttendance:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Method: POST, Path: "/admin/events/{event_id}/attendance" }
+
+  RewardsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/rewards/
+      Layers: [!Sub "arn:${AWS::Partition}:lambda:${AWS::Region}:017000801446:layer:AWSLambdaPowertoolsPythonV3-python313-arm64:38"]
+      Environment:
+        Variables:
+          BUCKET_NAME: !Ref SiteBucket
+          IMAGE_PREFIX: media/rewards/
+          MAX_IMAGE_BYTES: "5"
+          CLOUDFRONT_DISTRIBUTION_ID: !Ref SiteDistribution
+      Policies:
+        - Statement:
+            - Sid: RewardsTableAccess
+              Effect: Allow
+              Action: [dynamodb:GetItem, dynamodb:PutItem, dynamodb:UpdateItem]
+              Resource: !GetAtt Table.Arn
+            - Sid: RewardsIndexQuery
+              Effect: Allow
+              Action: dynamodb:Query
+              Resource: !Sub ${Table.Arn}/index/GSI1
+            - Sid: RewardImagesAccess
+              Effect: Allow
+              Action: [s3:GetObject, s3:PutObject, s3:DeleteObject]
+              Resource: !Sub ${SiteBucket.Arn}/media/rewards/*
+            - Sid: RewardImagesInvalidation
+              Effect: Allow
+              Action: cloudfront:CreateInvalidation
+              Resource: !Sub arn:${AWS::Partition}:cloudfront::${AWS::AccountId}:distribution/${SiteDistribution}
+      Events:
+        ListRewards:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Method: GET, Path: /rewards, Auth: { Authorizer: NONE } }
+        AdminListRewards:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Method: GET, Path: /admin/rewards }
+        AdminCreateReward:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Method: POST, Path: /admin/rewards }
+        AdminUpdateReward:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Method: PATCH, Path: "/admin/rewards/{reward_id}" }
+        AdminUploadImage:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Method: POST, Path: /admin/uploads }
+
+  RedemptionsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/redemptions/
+      Layers: [!Sub "arn:${AWS::Partition}:lambda:${AWS::Region}:017000801446:layer:AWSLambdaPowertoolsPythonV3-python313-arm64:38"]
+      Environment:
+        Variables:
+          LEADER_NAME: !Ref LeaderName
+      Policies:
+        - Statement:
+            - Sid: RedemptionsTableAccess
+              Effect: Allow
+              Action: [dynamodb:GetItem, dynamodb:PutItem, dynamodb:UpdateItem, dynamodb:Query]
+              Resource: !GetAtt Table.Arn
+            - Sid: RedemptionsIndexQuery
+              Effect: Allow
+              Action: dynamodb:Query
+              Resource: !Sub ${Table.Arn}/index/GSI1
+      Events:
+        Redeem:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Method: POST, Path: /redemptions }
+        MyRedemptions:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Method: GET, Path: /me/redemptions }
+        GetCoupon:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Method: GET, Path: "/coupons/{coupon_id}", Auth: { Authorizer: NONE } }
+        AdminListRedemptions:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Method: GET, Path: /admin/redemptions }
+        AdminUpdateRedemption:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Method: PATCH, Path: "/admin/redemptions/{redemption_id}" }
+
+  UsersFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/users/
+      Layers: [!Sub "arn:${AWS::Partition}:lambda:${AWS::Region}:017000801446:layer:AWSLambdaPowertoolsPythonV3-python313-arm64:38"]
+      Policies:
+        - Statement:
+            - Sid: ProfileAndHistoryRead
+              Effect: Allow
+              Action: [dynamodb:GetItem, dynamodb:Query]
+              Resource: !GetAtt Table.Arn
+      Events:
+        Me:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Method: GET, Path: /me }
+        MyActivities:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Method: GET, Path: /me/activities }
+
+  SuggestionsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/suggestions/
+      Layers: [!Sub "arn:${AWS::Partition}:lambda:${AWS::Region}:017000801446:layer:AWSLambdaPowertoolsPythonV3-python313-arm64:38"]
+      Environment:
+        Variables:
+          SENDER_EMAIL: !Sub mail@${EmailDomain}
+          LEADER_EMAIL: !Ref LeaderEmail
+      Policies:
+        - Statement:
+            - Sid: MailboxTableAccess
+              Effect: Allow
+              Action: [dynamodb:PutItem, dynamodb:UpdateItem]
+              Resource: !GetAtt Table.Arn
+            - Sid: MailboxIndexQuery
+              Effect: Allow
+              Action: dynamodb:Query
+              Resource: !Sub ${Table.Arn}/index/GSI1
+            - Sid: ForwardMessagesToLeader
+              Effect: Allow
+              Action: ses:SendEmail
+              Resource: !Sub arn:${AWS::Partition}:ses:${AWS::Region}:${AWS::AccountId}:identity/${EmailDomain}
+      Events:
+        CreateSuggestion:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Method: POST, Path: /suggestions }
+        CreateMessage:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Method: POST, Path: /messages }
+        AdminListSuggestions:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Method: GET, Path: /admin/suggestions }
+        AdminListMessages:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Method: GET, Path: /admin/messages }
+
+  # ------------------------------------------------------- Notifications
+  # DynamoDB Streams -> Lambda -> SES, plus one-off reminders scheduled
+  # with EventBridge Scheduler that call the same function back.
+  ReminderScheduleGroup:
+    Type: AWS::Scheduler::ScheduleGroup
+
+  NotifierFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/notifier/
+      Timeout: 60
+      Environment:
+        Variables:
+          GROUP_NAME: !Ref GroupName
+          SCHEDULE_GROUP: !Ref ReminderScheduleGroup
+          SCHEDULER_ROLE_ARN: !GetAtt SchedulerRole.Arn
+          SENDER_EMAIL: !Sub "${GroupName} <no-reply@${EmailDomain}>"
+          SITE_URL: !If [HasSiteUrl, !Ref SiteUrl, !Sub "https://${SiteDistribution.DomainName}"]
+      Policies:
+        - Statement:
+            - Sid: EventsAndSubscribers
+              Effect: Allow
+              Action: [dynamodb:GetItem, dynamodb:UpdateItem]
+              Resource: !GetAtt Table.Arn
+            - Sid: SubscribersQuery
+              Effect: Allow
+              Action: dynamodb:Query
+              Resource: !Sub ${Table.Arn}/index/GSI1
+            - Sid: SendEventEmails
+              Effect: Allow
+              Action: ses:SendEmail
+              Resource:
+                - !Sub arn:${AWS::Partition}:ses:${AWS::Region}:${AWS::AccountId}:identity/${EmailDomain}
+                - !Sub arn:${AWS::Partition}:ses:${AWS::Region}:${AWS::AccountId}:configuration-set/*
+              Condition:
+                StringEquals:
+                  ses:FromAddress: !Sub no-reply@${EmailDomain}
+            - Sid: ManageEventReminders
+              Effect: Allow
+              Action: [scheduler:CreateSchedule, scheduler:UpdateSchedule, scheduler:DeleteSchedule]
+              Resource: !Sub arn:${AWS::Partition}:scheduler:${AWS::Region}:${AWS::AccountId}:schedule/${ReminderScheduleGroup}/*
+            - Sid: PassSchedulerRole
+              Effect: Allow
+              Action: iam:PassRole
+              Resource: !GetAtt SchedulerRole.Arn
+              Condition:
+                StringEquals:
+                  iam:PassedToService: scheduler.amazonaws.com
+      Events:
+        TableStream:
+          Type: DynamoDB
+          Properties:
+            Stream: !GetAtt Table.StreamArn
+            StartingPosition: LATEST
+            BatchSize: 100
+
+  SchedulerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: { Service: scheduler.amazonaws.com }
+            Action: sts:AssumeRole
+            Condition:
+              StringEquals:
+                aws:SourceAccount: !Ref AWS::AccountId
+
+  # Separate resource to avoid a circular dependency
+  # (function env -> role -> function ARN).
+  SchedulerInvokePolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: InvokeNotificationsFunction
+      Roles: [!Ref SchedulerRole]
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action: lambda:InvokeFunction
+            Resource: !GetAtt NotifierFunction.Arn
+
+Outputs:
+  SiteUrl:
+    Description: Frontend URL.
+    Value: !If [HasSiteUrl, !Ref SiteUrl, !Sub "https://${SiteDistribution.DomainName}"]
+  SiteBucketName:
+    Description: Upload the contents of site/ here.
+    Value: !Ref SiteBucket
+  ApiUrl:
+    Description: Base URL of the HTTP API.
+    Value: !Sub https://${HttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}
+  UserPoolId:
+    Value: !Ref UserPool
+  UserPoolClientId:
+    Value: !Ref UserPoolClient
+  LoginDomain:
+    Description: Cognito login domain for the frontend.
+    Value: !Sub ${AuthDomainPrefix}.auth.${AWS::Region}.amazoncognito.com
+  TableName:
+    Value: !Ref Table

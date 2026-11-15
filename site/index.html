@@ -1,0 +1,3126 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#16213A" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%2036%2036%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M8%201h7l4.5%2012h-7z%22%20fill%3D%22%231B396A%22%20opacity%3D%221%22/%3E%3Cpath%20d%3D%22M28%201h-7l-4.5%2012h7z%22%20fill%3D%22%2316213A%22%20opacity%3D%221%22/%3E%3Ccircle%20cx%3D%2218%22%20cy%3D%2223%22%20r%3D%2211%22%20fill%3D%22%23F29111%22/%3E%3Ccircle%20cx%3D%2218%22%20cy%3D%2223%22%20r%3D%228.25%22%20fill%3D%22none%22%20stroke%3D%22rgba%28255%2C255%2C255%2C.55%29%22%20stroke-width%3D%221.2%22/%3E%3Cpolygon%20points%3D%2218%2C17.8%2019.23%2C21.3%2022.95%2C21.39%2020%2C23.65%2021.06%2C27.21%2018%2C25.1%2014.94%2C27.21%2016%2C23.65%2013.05%2C21.39%2016.77%2C21.3%22%20fill%3D%22%2316213A%22/%3E%3C/svg%3E" />
+<title>Recompensas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #16213A;
+    --paper: #F4F6F9;
+    --line: #DCE1EA;
+    --aws: #F29111;
+    --aws-text: #8A4F00;
+    --tec: #1B396A;
+    --gain: #13795B;
+    --spend: #B4331F;
+    --muted: rgba(22, 33, 58, .68);
+    --display: "Bricolage Grotesque", system-ui, sans-serif;
+    --sans: Figtree, system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; }
+  body { background: var(--paper); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; line-height: 1.45; }
+  h1, h2, h3, p { margin: 0; }
+  button, input, textarea, select { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--aws); outline-offset: 2px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .wrap { max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; }
+  .num { font-variant-numeric: tabular-nums; }
+  .uuid { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: .9em; word-break: break-all; }
+
+  /* Pantalla completa */
+  .screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--ink); color: #fff; padding: 1.5rem; text-align: center; }
+  .screen > div { max-width: 28rem; }
+  .screen h1 { font-family: var(--display); font-size: 1.6rem; margin-top: 1.5rem; }
+  .screen p { margin-top: .75rem; color: rgba(255,255,255,.75); }
+  .screen svg { width: 48px; height: 48px; }
+  .btn-aws { margin-top: 2rem; background: var(--aws); color: var(--ink); border: 0; border-radius: .5rem; padding: .65rem 1.25rem; font-weight: 600; }
+  .btn-aws:hover { background: #F7A53A; }
+
+  /* Encabezado */
+  header { position: sticky; top: 0; z-index: 20; background: var(--ink); color: #fff; }
+  .head { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.5rem; padding-top: .75rem; padding-bottom: .75rem; }
+  .brand { display: flex; align-items: center; gap: .75rem; margin-right: auto; }
+  .brand svg { width: 36px; height: 36px; }
+  .brand b { display: block; font-family: var(--display); font-size: 1.1rem; line-height: 1.2; }
+  .brand small { display: block; font-size: .75rem; color: rgba(255,255,255,.6); }
+  .who { display: flex; align-items: center; gap: 1rem; }
+  .user { min-width: 0; text-align: right; }
+  .user small { display: block; font-size: .75rem; color: rgba(255,255,255,.6); }
+  .user span { display: block; font-size: .875rem; font-weight: 500; max-width: 16rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .points { background: var(--aws); color: var(--ink); border-radius: .5rem; padding: .25rem .75rem; line-height: 1.15; }
+  .points small { display: block; font-size: .7rem; font-weight: 600; }
+  .points strong { font-family: var(--display); font-size: 1.3rem; font-weight: 800; }
+  .logout { display: flex; align-items: center; gap: .35rem; background: none; border: 0; color: rgba(255,255,255,.75); border-radius: .5rem; padding: .5rem; font-size: .875rem; }
+  .logout:hover { background: rgba(255,255,255,.1); color: #fff; }
+  .logout svg { width: 16px; height: 16px; }
+
+  /* Secciones */
+  main.wrap { padding-top: 3rem; padding-bottom: 3rem; }
+  main > section, main > .forms { margin-bottom: 3.5rem; }
+  .sec-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; }
+  .sec-head > div:first-child { max-width: 42rem; }
+  .sec-head h2 { font-family: var(--display); font-size: 1.75rem; font-weight: 700; line-height: 1.15; }
+  .sec-head p { margin-top: .25rem; color: var(--muted); }
+
+  .card { background: #fff; border: 1px solid var(--line); border-radius: .75rem; }
+  .grid { display: grid; gap: 1rem; }
+  .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .chip { display: inline-block; border-radius: .375rem; padding: .1rem .5rem; font-size: .8rem; font-weight: 600; }
+  .chip-aws { background: rgba(242,145,17,.15); color: var(--aws-text); }
+  .chip-tec { background: rgba(27,57,106,.1); color: var(--tec); }
+  .chip-ok { background: rgba(19,121,91,.12); color: var(--gain); }
+  .chip-bad { background: rgba(180,51,31,.1); color: var(--spend); }
+  .chip-wait { background: rgba(22,33,58,.08); color: var(--ink); }
+
+  .skeleton { background: #fff; border-radius: .75rem; animation: pulse 1.4s ease-in-out infinite; }
+  @keyframes pulse { 50% { opacity: .5; } }
+  .empty { border: 1px dashed var(--line); background: rgba(255,255,255,.6); border-radius: .75rem; padding: 1.5rem; text-align: center; color: var(--muted); }
+  .error { border: 1px solid rgba(180,51,31,.3); background: #fff; border-radius: .75rem; padding: 1.25rem; font-size: .9rem; }
+  .error b { color: var(--spend); }
+  .error p { margin-top: .25rem; color: var(--muted); }
+  .link { background: none; border: 0; padding: 0; color: var(--tec); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+  .error .link { margin-top: .75rem; }
+
+  /* Suscripción */
+  .sub { display: flex; align-items: center; gap: .75rem; padding: .75rem 1rem; }
+  .sub b { display: block; font-size: .875rem; }
+  .sub span { display: block; font-size: .875rem; color: var(--muted); }
+  .switch { position: relative; width: 48px; height: 28px; flex-shrink: 0; border: 0; border-radius: 999px; background: rgba(22,33,58,.2); transition: background .2s; }
+  .switch[aria-checked="true"] { background: var(--gain); }
+  .switch:disabled { opacity: .5; cursor: default; }
+  .switch::after { content: ""; position: absolute; top: 4px; left: 4px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.2); transition: transform .2s; }
+  .switch[aria-checked="true"]::after { transform: translateX(20px); }
+
+  /* Eventos */
+  .events { list-style: none; margin: 0; padding: 0; }
+  .event { display: flex; gap: 1rem; padding: 1rem; }
+  .date { width: 4rem; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--ink); color: #fff; border-radius: .5rem; padding: .5rem 0; }
+  .date b { font-family: var(--display); font-size: 1.9rem; font-weight: 800; line-height: 1; }
+  .date span { margin-top: .25rem; font-size: .875rem; color: rgba(255,255,255,.75); text-transform: capitalize; }
+  .event h3 { font-size: 1rem; font-weight: 600; line-height: 1.3; }
+  .event p { margin-top: .2rem; font-size: .875rem; color: var(--muted); }
+  .event p.when::first-letter { text-transform: uppercase; }
+  .event .chip { margin-top: .5rem; font-size: .875rem; }
+  .event .name-btn { font-size: 1rem; line-height: 1.3; }
+  .event .ev-desc { margin: .3rem 0 .15rem; color: var(--ink); opacity: .8; }
+
+  /* Filtro */
+  .filter { display: flex; background: #fff; border: 1px solid var(--line); border-radius: .5rem; padding: .25rem; }
+  .filter button { border: 0; background: none; border-radius: .375rem; padding: .4rem .75rem; font-size: .875rem; font-weight: 600; color: var(--muted); }
+  .filter button:hover { color: var(--ink); }
+  .filter button[aria-pressed="true"] { background: var(--ink); color: #fff; }
+  .rdm-groups { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 1rem 1.5rem; margin-bottom: 1.25rem; }
+  .glabel { display: flex; align-items: center; gap: .4rem; margin-bottom: .35rem; font-size: .75rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+  .dot { width: .55rem; height: .55rem; border-radius: 50%; }
+  .dot-aws { background: var(--aws); }
+  .dot-tec { background: var(--tec); }
+  .dot-both { background: linear-gradient(90deg, var(--aws) 50%, var(--tec) 50%); }
+
+  /* Recompensas */
+  .rewards { list-style: none; margin: 0; padding: 0; }
+  .reward { display: flex; flex-direction: column; overflow: hidden; }
+  /* contain: la foto completa siempre se ve, sin recortes; el fondo blanco rellena los lados */
+  .reward-img { aspect-ratio: 4 / 3; width: 100%; object-fit: contain; padding: .5rem; background: #fff; display: block; }
+  .reward-ph { aspect-ratio: 4 / 3; display: flex; align-items: center; justify-content: center; }
+  .reward-ph svg { width: 48px; height: 48px; }
+  .ph-aws { background: rgba(242,145,17,.1); color: var(--aws); }
+  .ph-tec { background: rgba(27,57,106,.05); color: var(--tec); }
+  .reward.soldout .reward-img, .reward.soldout .reward-ph { filter: grayscale(1); opacity: .55; }
+  .reward-body { display: flex; flex-direction: column; flex: 1; padding: 1rem; }
+  .reward-top { display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
+  .reward-top .chip { font-size: .75rem; }
+  .stock { font-size: .8rem; color: var(--muted); }
+  .stock.low { color: var(--spend); font-weight: 600; }
+  .reward h3 { margin-top: .5rem; font-size: 1rem; font-weight: 600; line-height: 1.3; }
+  .name-btn { display: inline-flex; align-items: flex-start; gap: .3rem; background: none; border: 0; padding: 0; text-align: left; font-weight: 600; text-decoration: underline dotted rgba(22,33,58,.35); text-underline-offset: 3px; }
+  .name-btn:hover { text-decoration-color: var(--ink); }
+  .name-btn svg { flex-shrink: 0; margin-top: .15rem; transition: transform .2s; }
+  .name-btn[aria-expanded="true"] svg { transform: rotate(180deg); }
+  .desc { margin-top: .35rem; font-size: .875rem; color: var(--muted); }
+  .cost { margin-top: .25rem; font-family: var(--display); font-size: 1.5rem; font-weight: 800; }
+  .cost span { font-size: 1rem; font-weight: 600; color: var(--muted); }
+  .progress { margin-top: auto; padding-top: 1rem; font-size: .875rem; }
+  .bar { height: 6px; border-radius: 999px; background: rgba(22,33,58,.1); overflow: hidden; }
+  .bar div { height: 100%; background: var(--aws); border-radius: 999px; }
+  .progress p { margin-top: .35rem; color: var(--muted); }
+  .redeem { width: 100%; }
+
+  /* Listas (canjes e historial) */
+  .rows { list-style: none; margin: 0; padding: 0; overflow: hidden; }
+  .rows li { display: flex; align-items: center; gap: 1rem; padding: .8rem 1.25rem; border-top: 1px solid var(--line); }
+  .rows li:first-child { border-top: 0; }
+  .rows .t { flex: 1; min-width: 0; }
+  .rows .t p { font-weight: 500; }
+  .rows .t small { color: rgba(22,33,58,.6); font-size: .875rem; }
+  .rows .side { display: flex; align-items: center; gap: .75rem; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
+  .rows .pts { font-family: var(--display); font-weight: 700; font-size: 1.1rem; }
+  .plus { color: var(--gain); } .minus { color: var(--spend); }
+
+  /* Formularios */
+  .forms { display: grid; gap: 1.5rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .panel { display: flex; flex-direction: column; padding: 1.5rem; }
+  .panel h2 { font-family: var(--display); font-size: 1.25rem; font-weight: 700; line-height: 1.25; }
+  .panel > p { margin-top: .25rem; font-size: .875rem; color: var(--muted); }
+  .panel form { display: flex; flex-direction: column; flex: 1; margin-top: 1rem; }
+  label.f { display: block; font-size: .875rem; font-weight: 600; }
+  label.f + input, label.f + textarea, label.f + select { margin-top: .25rem; }
+  .field { width: 100%; border: 1px solid var(--line); background: rgba(244,246,249,.6); border-radius: .5rem; padding: .55rem .75rem; resize: vertical; }
+  .field::placeholder { color: rgba(22,33,58,.4); }
+  .field:focus { outline: none; background: #fff; border-color: var(--tec); box-shadow: 0 0 0 3px rgba(27,57,106,.15); }
+  .field:user-invalid { border-color: var(--spend); }
+  .hint { margin-top: .25rem; font-size: .8rem; color: var(--muted); }
+  .gap { margin-top: .75rem; }
+  .count { margin-top: .25rem; text-align: right; font-size: .75rem; color: rgba(22,33,58,.5); }
+  .check { display: flex; align-items: center; gap: .5rem; margin-top: .5rem; font-size: .875rem; }
+  .check input { width: 16px; height: 16px; accent-color: var(--tec); }
+  .actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; margin-top: auto; padding-top: 1.25rem; }
+  .btn { border: 0; background: var(--ink); color: #fff; border-radius: .5rem; padding: .65rem 1rem; font-weight: 600; }
+  .btn:hover { background: var(--tec); }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .btn:disabled:hover { background: var(--ink); }
+  .btn-ghost { border: 1px solid var(--line); background: #fff; color: var(--ink); border-radius: .5rem; padding: .65rem 1rem; font-weight: 600; }
+  .btn-ghost:hover { border-color: var(--ink); }
+  .btn-sm { padding: .35rem .7rem; font-size: .875rem; }
+  .feedback { font-size: .875rem; font-weight: 600; }
+  .feedback.ok { color: var(--gain); }
+  .feedback.bad { color: var(--spend); }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+  .seg { display: flex; gap: .5rem; margin-top: .25rem; }
+  .seg label { flex: 1; }
+  .seg input { position: absolute; opacity: 0; }
+  .seg span { display: block; text-align: center; border: 1px solid var(--line); border-radius: .5rem; padding: .5rem; font-weight: 600; cursor: pointer; background: rgba(244,246,249,.6); }
+  .seg input:checked + span { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .seg input:focus-visible + span { outline: 2px solid var(--aws); outline-offset: 2px; }
+
+  /* Verificación */
+  .verify { padding: 1.5rem; }
+  #verify-dialog { width: min(42rem, calc(100vw - 2rem)); }
+  .dlg-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+  .dlg-top h2 { font-family: var(--display); font-size: 1.35rem; line-height: 1.2; }
+  .icon-close { flex-shrink: 0; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border: 0; border-radius: .5rem; background: none; color: var(--muted); }
+  .icon-close:hover { background: var(--paper); color: var(--ink); }
+  .for-teachers { display: flex; gap: .5rem; align-items: center; margin-top: .75rem; padding: .6rem .85rem; border-radius: .5rem; background: rgba(27,57,106,.08); color: var(--tec); font-weight: 600; font-size: .9rem; }
+  .for-teachers svg { width: 18px; height: 18px; flex-shrink: 0; }
+  .verify-intro { margin-top: .75rem; color: var(--muted); font-size: .925rem; }
+  .head-actions { display: flex; flex-direction: column; align-items: flex-end; gap: .3rem; }
+  .verify-btn { white-space: nowrap; display: inline-flex; align-items: center; gap: .35rem; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.3); border-radius: 999px; padding: .3rem .75rem; color: rgba(255,255,255,.88); font-size: .78rem; font-weight: 600; transition: background .15s, border-color .15s; }
+  .verify-btn:hover { background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.55); color: #fff; }
+  .verify-btn svg { width: 14px; height: 14px; }
+  .verify form { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1rem; }
+  .verify input { flex: 1 1 22rem; }
+  .result { margin-top: 1.25rem; }
+  .result-head { display: flex; align-items: center; gap: .75rem; padding: 1rem 1.25rem; border-radius: .75rem .75rem 0 0; font-weight: 700; }
+  .result-head.ok { background: rgba(19,121,91,.1); color: var(--gain); }
+  .result-head.bad { background: rgba(180,51,31,.08); color: var(--spend); }
+  .result-body { border: 1px solid var(--line); border-top: 0; border-radius: 0 0 .75rem .75rem; padding: 1.25rem; }
+  .facts { display: grid; grid-template-columns: max-content 1fr; gap: .4rem 1.25rem; margin: 0; }
+  .facts dt { color: var(--muted); font-size: .9rem; }
+  .facts dd { margin: 0; font-weight: 600; min-width: 0; }
+  .result-body .facts { gap: .6rem 1.25rem; line-height: 1.4; }
+  .result-body .facts dd { overflow-wrap: anywhere; }
+  .result-body .facts .issuer-role { display: block; font-weight: 500; font-size: .875rem; color: var(--muted); }
+  .vf-acts { list-style: none; margin: .5rem 0 0; padding: 0; }
+  .vf-acts li { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; padding: .65rem 0; border-bottom: 1px solid var(--line); }
+  .vf-acts li > div { min-width: 0; }
+  .vf-acts .t { display: block; font-weight: 500; line-height: 1.35; overflow-wrap: anywhere; }
+  .vf-acts .d { display: block; margin-top: .15rem; font-size: .8rem; color: var(--muted); }
+  .vf-acts b { flex-shrink: 0; color: var(--gain); }
+  .result-body h3 { margin-top: 1.25rem; font-size: .95rem; }
+  .mini { width: 100%; border-collapse: collapse; margin-top: .5rem; font-size: .9rem; }
+  .mini th, .mini td { text-align: left; padding: .4rem .5rem; border-bottom: 1px solid var(--line); }
+  .mini th { font-weight: 600; color: var(--muted); }
+  .mini td:last-child, .mini th:last-child { text-align: right; }
+  .note { margin-top: 1rem; font-size: .875rem; color: var(--muted); }
+
+  /* Diálogos */
+  dialog { border: 0; border-radius: 1rem; padding: 0; width: min(32rem, calc(100vw - 2rem)); max-height: calc(100vh - 2rem); color: var(--ink); box-shadow: 0 20px 50px rgba(22,33,58,.3); }
+  dialog::backdrop { background: rgba(22,33,58,.55); }
+  .dlg { padding: 1.5rem; }
+  .dlg h2 { font-family: var(--display); font-size: 1.35rem; line-height: 1.2; }
+  .dlg > p { margin-top: .35rem; color: var(--muted); font-size: .9rem; }
+  .dlg form { margin-top: 1.25rem; }
+  .dlg .actions { justify-content: flex-end; }
+  .summary { display: flex; justify-content: space-between; gap: 1rem; margin-top: 1rem; padding: .75rem 1rem; background: var(--paper); border-radius: .5rem; font-size: .9rem; }
+  .summary b { font-family: var(--display); }
+  #voucher-dialog { width: min(52rem, calc(100vw - 2rem)); }
+  #image-dialog { width: fit-content; min-width: 16rem; max-width: min(64rem, calc(100vw - 2rem)); background: #0B1220; color: #fff; }
+  #image-dialog::backdrop { background: rgba(5,10,20,.8); }
+  .lightbox { position: relative; padding: 2.75rem 1rem 1rem; }
+  .lightbox img { display: block; max-width: 100%; max-height: calc(100vh - 9rem); margin: 0 auto; object-fit: contain; border-radius: .5rem; }
+  .lightbox p { margin-top: .75rem; text-align: center; font-weight: 600; }
+  .lb-close { position: absolute; top: .4rem; right: .4rem; color: rgba(255,255,255,.8); }
+  .lb-close:hover { background: rgba(255,255,255,.12); color: #fff; }
+  .zoom { display: block; width: 100%; padding: 0; border: 0; background: none; cursor: zoom-in; }
+  .zoom:focus-visible { outline-offset: -3px; }
+  #reward-edit-dialog { width: min(36rem, calc(100vw - 2rem)); }
+  #confirm-dialog { width: min(28rem, calc(100vw - 2rem)); }
+  #event-edit-dialog { width: min(36rem, calc(100vw - 2rem)); }
+  #confirm-dialog .actions { justify-content: flex-end; }
+  .btn-danger { background: var(--spend); }
+  .btn-danger:hover { background: #8F2817; }
+  .img-edit { display: flex; gap: 1rem; align-items: flex-start; margin-top: .35rem; }
+  .img-edit .thumb { width: 7rem; flex-shrink: 0; }
+  .img-edit > div { flex: 1; min-width: 0; }
+  .voucher-bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .75rem; padding: 1rem 1.5rem; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: #fff; z-index: 1; }
+  .voucher-bar div { display: flex; gap: .5rem; }
+  .voucher-scroll { padding: 1.5rem; background: var(--paper); }
+
+  /* Vale institucional (pantalla e impresión) */
+  .vale { background: #fff; color: #111827; max-width: 46rem; margin: 0 auto; padding: 2.25rem; border: 1px solid var(--line); border-top: 8px solid var(--tec); font-size: 14px; line-height: 1.45; }
+  .vale-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1.5rem; }
+  .vale-brand { display: flex; gap: .75rem; align-items: center; }
+  .vale-brand svg { width: 40px; height: 40px; }
+  .vale-brand b { display: block; font-family: var(--display); font-size: 1.05rem; color: var(--ink); }
+  .vale-brand span { display: block; font-size: .8rem; color: #4B5563; }
+  .vale-title { text-align: right; }
+  .vale-title h1 { font-family: var(--display); font-size: 1.6rem; color: var(--tec); line-height: 1.1; }
+  .vale-title p { font-size: .8rem; color: #4B5563; margin-top: .25rem; }
+  .vale-facts { display: grid; grid-template-columns: max-content 1fr; gap: .45rem 1.5rem; margin: 1rem 0 0; padding: 1rem 1.25rem; background: #F4F6F9; border-radius: .5rem; }
+  .vale-facts dt { color: #4B5563; }
+  .vale-facts dd { margin: 0; font-weight: 600; }
+  .vale h2 { font-family: var(--display); font-size: 1.05rem; margin-top: 1.75rem; color: var(--ink); }
+  .vale table { width: 100%; border-collapse: collapse; margin-top: .5rem; }
+  .vale th, .vale td { text-align: left; padding: .45rem .5rem; border-bottom: 1px solid #E5E7EB; }
+  .vale th { font-size: .8rem; color: #4B5563; font-weight: 600; }
+  .vale td:last-child, .vale th:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+  .vale tfoot td { font-weight: 700; border-bottom: 0; }
+  .vale-note { margin-top: .6rem; font-size: .8rem; color: #4B5563; }
+  .vale-sign { margin-top: 2rem; display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; flex-wrap: wrap; }
+  .sign { width: 16rem; }
+  .sign small { display: block; color: #4B5563; font-size: .8rem; }
+  .sign b { display: block; margin-top: .2rem; font-size: 1rem; }
+  .sign span { display: block; font-size: .8rem; color: #4B5563; }
+  .vale-reward { margin-top: 1.75rem; padding: 1.1rem 1.25rem; border-left: 6px solid var(--aws); background: rgba(242,145,17,.08); border-radius: 0 .5rem .5rem 0; }
+  .vale-reward span { display: block; font-size: .8rem; color: #4B5563; }
+  .vale-reward b { display: block; margin-top: .15rem; font-family: var(--display); font-size: 1.45rem; line-height: 1.2; color: var(--ink); }
+  .vale-reward p { margin-top: .35rem; color: #374151; max-width: 38rem; }
+  .vale-reward em { display: block; margin-top: .2rem; font-style: normal; font-weight: 600; color: var(--aws-text); }
+  .vale-verify { flex: 1 1 18rem; display: flex; gap: .9rem; align-items: center; border: 1px dashed #9CA3AF; border-radius: .5rem; padding: .85rem 1rem; font-size: .8rem; color: #374151; }
+  .vale-qr { flex-shrink: 0; width: 96px; }
+  .vale-qr svg { display: block; width: 100%; height: auto; }
+  .vale-verify b { color: var(--ink); }
+
+  #print-area { display: none; }
+
+  .header-login { margin-top: 0; padding: .55rem 1.1rem; white-space: nowrap; }
+  .locked { display: flex; flex-direction: column; align-items: center; gap: .75rem; text-align: center; padding: 2rem 1.5rem; border: 1px dashed var(--line); background: rgba(255,255,255,.7); border-radius: .75rem; color: var(--muted); }
+  .locked svg { width: 28px; height: 28px; color: var(--tec); }
+  .locked p { max-width: 30rem; }
+  .panel .locked { margin-top: 1rem; flex: 1; justify-content: center; }
+
+  /* Panel del AWS Student Group Leader */
+  .admin-head { margin-bottom: 1.5rem; }
+  .admin-title { font-family: var(--display); font-size: 2rem; line-height: 1.1; }
+  .admin-head p { margin-top: .35rem; color: var(--muted); }
+  .tabs { display: flex; gap: .25rem; border-bottom: 1px solid var(--line); margin-bottom: 2rem; overflow-x: auto; }
+  .tabs button { flex-shrink: 0; background: none; border: 0; border-bottom: 3px solid transparent; padding: .75rem 1rem; font-weight: 600; color: var(--muted); white-space: nowrap; }
+  .tabs button:hover { color: var(--ink); }
+  .tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--aws); }
+  .admin-grid { display: grid; gap: 1.5rem; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+  .admin-grid .panel h2 { font-size: 1.25rem; }
+  .filter.scroll { overflow-x: auto; max-width: 100%; }
+  .filter.scroll button { white-space: nowrap; }
+  .more { display: flex; justify-content: center; margin-top: 1rem; }
+  .more:empty { display: none; }
+  .rdm-list { display: grid; gap: 1rem; grid-template-columns: repeat(2, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; }
+  .rdm { padding: 1.1rem 1.25rem; display: flex; flex-direction: column; gap: .6rem; }
+  .rdm-top { display: flex; justify-content: space-between; gap: .75rem; align-items: flex-start; }
+  .rdm-top h3 { font-size: 1rem; line-height: 1.3; }
+  .rdm .facts { font-size: .9rem; }
+  .rdm .facts a { color: var(--tec); }
+  .rdm .actions { padding-top: .5rem; margin-top: 0; }
+  .tbl-wrap { overflow-x: auto; }
+  .tbl { width: 100%; border-collapse: collapse; font-size: .9rem; }
+  .tbl th, .tbl td { text-align: left; padding: .6rem .75rem; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  .tbl th { font-size: .8rem; color: var(--muted); font-weight: 600; }
+  .tbl tr:last-child td { border-bottom: 0; }
+  .tbl input[type=number] { width: 4.75rem; padding: .35rem .5rem; }
+  /* Catálogo en escritorio: Guardar y Editar uno sobre otro para que quepan en la columna */
+  .rw-actions { width: 1%; }
+  .rw-actions .btn-sm { display: block; width: 100%; margin: .2rem 0; }
+  .thumb-cell { width: 4.5rem; }
+  .thumb { display: block; width: 4rem; aspect-ratio: 16 / 10; object-fit: contain; border-radius: .375rem; border: 1px solid var(--line); background: #fff; }
+  .thumb-empty { background: repeating-linear-gradient(45deg, var(--paper), var(--paper) 6px, #fff 6px, #fff 12px); }
+  .att-result { margin-top: 1rem; font-size: .9rem; }
+  .att-result p + p { margin-top: .25rem; }
+  .msg { padding: 1rem 1.25rem; }
+  .msg + .msg { margin-top: .75rem; }
+  .msg-top { display: flex; justify-content: space-between; gap: .75rem; flex-wrap: wrap; font-size: .85rem; color: var(--muted); }
+  .msg h3 { margin-top: .35rem; font-size: 1rem; }
+  .msg p.body { margin-top: .35rem; white-space: pre-wrap; }
+
+  footer { border-top: 1px solid var(--line); }
+  footer > p { padding-top: 1.5rem; padding-bottom: 1.5rem; font-size: .875rem; color: rgba(22,33,58,.6); text-align: center; }
+
+  /* Aviso: plataforma independiente y sin fines de lucro */
+  .about { display: flex; gap: 1rem; align-items: flex-start; padding: 1.25rem 1.5rem; background: #fff; border: 1px solid var(--line); border-left: 4px solid var(--tec); border-radius: .75rem; }
+  .about svg { width: 22px; height: 22px; flex-shrink: 0; margin-top: .1rem; color: var(--tec); }
+  .about h2 { font-family: var(--display); font-size: 1.05rem; font-weight: 700; line-height: 1.25; }
+  .about p { margin-top: .35rem; font-size: .9rem; color: var(--muted); max-width: 60rem; }
+  .about p.tm { font-size: .8rem; color: rgba(22,33,58,.55); }
+  .wrap.notice-wrap { padding-top: 1.75rem; }
+  .notice-wrap:not([hidden]) ~ main.wrap { padding-top: 2.25rem; }
+
+  /* Selector de idioma */
+  .lang { display: flex; gap: 2px; padding: 3px; border: 1px solid rgba(255,255,255,.25); border-radius: 999px; background: rgba(255,255,255,.06); }
+  .lang button { display: inline-flex; align-items: center; gap: .4rem; border: 0; background: none; color: rgba(255,255,255,.8); border-radius: 999px; padding: .3rem .7rem; font-size: .75rem; font-weight: 700; letter-spacing: .04em; }
+  .lang button:hover { color: #fff; background: rgba(255,255,255,.1); }
+  .lang button[aria-pressed="true"] { background: #fff; color: var(--ink); }
+  .lang svg { width: 20px; height: 13px; border-radius: 2px; flex-shrink: 0; box-shadow: 0 0 0 1px rgba(0,0,0,.15); }
+  .lang .lg-short { display: none; }
+  @media (max-width: 640px) {
+    .about { padding: 1rem; gap: .75rem; }
+    .wrap.notice-wrap { padding-top: 1.5rem; }
+    .notice-wrap:not([hidden]) ~ main.wrap { padding-top: 1.75rem; }
+    .lang .lg-long { display: none; }
+    .lang .lg-short { display: inline; }
+  }
+
+  @media (max-width: 900px) {
+    .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .events.grid-3 { grid-template-columns: 1fr; }
+    .forms { grid-template-columns: 1fr; }
+    .admin-grid, .rdm-list { grid-template-columns: minmax(0, 1fr); }
+    /* Verificación de vales en celular: cada dato debajo de su etiqueta */
+    .verify { padding: 1.1rem; }
+    .result-head { padding: .85rem 1rem; }
+    .result-body { padding: 1rem; }
+    .result-body .facts { grid-template-columns: 1fr; gap: 0; }
+    .result-body .facts dt { margin-top: .75rem; font-size: .8rem; }
+    .result-body .facts dt:first-child { margin-top: 0; }
+  }
+  @media (max-width: 640px) {
+    /* Vale en pantalla de celular (la impresión usa @media print y no se ve afectada) */
+    .vale { padding: 1.1rem 1rem 1.25rem; font-size: 13px; }
+    .vale-head { flex-direction: column; gap: .75rem; }
+    .vale-title { text-align: left; }
+    .vale-title h1 { font-size: 1.35rem; }
+    .vale-reward { margin-top: 1.1rem; padding: .9rem 1rem; }
+    .vale-reward b { font-size: 1.25rem; }
+    .vale-facts { grid-template-columns: 1fr; gap: 0; padding: .85rem 1rem; }
+    .vale-facts dt { margin-top: .6rem; font-size: .75rem; }
+    .vale-facts dt:first-child { margin-top: 0; }
+    .vale-facts dd { overflow-wrap: anywhere; }
+    .vale h2 { margin-top: 1.4rem; font-size: 1rem; }
+    .vale th, .vale td { padding: .5rem .35rem; vertical-align: top; }
+    .vale td:first-child { white-space: nowrap; font-size: .78rem; color: #4B5563; }
+    .vale td:nth-child(2) { overflow-wrap: break-word; }
+    .vale td:last-child { white-space: nowrap; }
+    .voucher-scroll { padding: .75rem; }
+    #voucher-dialog { width: calc(100vw - 1rem); }
+    .vale-sign { margin-top: 1.5rem; gap: 1.25rem; }
+    .vale-verify { flex-direction: column; text-align: center; flex-basis: 100%; }
+    .vale-qr { width: 120px; }
+    .wrap { padding: 0 1rem; }
+    main.wrap { padding-top: 2rem; padding-bottom: 2rem; }
+    .grid-3 { grid-template-columns: 1fr; }
+    .who { width: 100%; }
+    .vb-long { display: none; }
+    /* Sin sesión en celular: Iniciar sesión arriba y Verificar vale debajo, alineados a la izquierda */
+    .head { padding-bottom: 1.1rem; }
+    .head-actions { width: 100%; flex-direction: column; align-items: flex-start; gap: .5rem; }
+    .head-actions .header-login { padding: .6rem 1.25rem; }
+    .head-actions .verify-btn { padding: .4rem .8rem; font-size: .8rem; }
+    /* Sin sesión: marca arriba; Iniciar sesión con el selector de idioma a su derecha; Verificar vale debajo */
+    .head.guest { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "brand brand" "login lang" "verify verify"; align-items: center; gap: .75rem 1rem; }
+    .head.guest .brand { grid-area: brand; margin-right: 0; }
+    .head.guest .head-actions { display: contents; }
+    .head.guest .header-login { grid-area: login; justify-self: start; }
+    .head.guest .lang { grid-area: lang; }
+    .head.guest .verify-btn { grid-area: verify; justify-self: start; }
+    .user { flex: 1; text-align: left; }
+    .logout .txt { display: none; }
+    .sec-head h2 { font-size: 1.5rem; }
+    .vale { padding: 1.25rem; }
+    .vale-head { flex-direction: column; }
+    .vale-title { text-align: left; }
+    .rows li { flex-wrap: wrap; }
+
+    /* ---- Panel del líder en celular ---- */
+    .admin-title { font-size: 1.6rem; }
+    .admin-head { margin-bottom: 1.25rem; }
+    /* Pestañas: se acomodan en varias filas como botones, sin quedar cortadas */
+    .tabs { flex-wrap: wrap; gap: .4rem; border-bottom: 0; margin-bottom: 1.5rem; overflow: visible; }
+    .tabs button { border: 1px solid var(--line); border-radius: 999px; padding: .45rem .85rem; font-size: .85rem; background: #fff; }
+    .tabs button[aria-selected="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .admin-grid .panel { padding: 1.25rem; }
+    .admin-grid .row2, #event-edit-form .row2 { grid-template-columns: 1fr; }
+    .rdm-groups { gap: .75rem 1rem; }
+    .filter { flex-wrap: wrap; }
+    /* Tablas del panel: cada fila se vuelve una tarjeta con etiqueta y valor */
+    .tbl-wrap { overflow: visible; }
+    .tbl thead { display: none; }
+    .tbl, .tbl tbody, .tbl tr, .tbl td { display: block; width: 100%; }
+    .tbl tr { padding: 1rem; border-bottom: 1px solid var(--line); }
+    .tbl tr:not(.rw-row) { display: flex; flex-direction: column; }
+    .tbl tr:not(.rw-row) > td.cell-main { order: -1; } /* el título del evento va primero */
+    .tbl tr:last-child { border-bottom: 0; }
+    .tbl td { border: 0; padding: .3rem 0; display: flex; align-items: center; justify-content: space-between; gap: 1rem; text-align: right; }
+    .tbl td[data-label]::before { content: attr(data-label); font-size: .8rem; font-weight: 600; color: var(--muted); text-align: left; flex-shrink: 0; }
+    .tbl td.cell-main { display: block; text-align: left; font-weight: 600; font-size: 1rem; padding-bottom: .5rem; }
+    .tbl td.cell-actions { justify-content: flex-start; flex-wrap: wrap; gap: .5rem; padding-top: .75rem; text-align: left; white-space: normal !important; }
+    .tbl td.cell-actions .feedback { flex-basis: 100%; margin-top: 0 !important; }
+    .rw-actions { width: 100%; }
+    .rw-actions .btn-sm { display: inline-flex; width: auto; margin: 0; }
+    /* Recompensas: miniatura a la izquierda del nombre */
+    .tbl tr.rw-row { display: grid; grid-template-columns: 5rem minmax(0, 1fr); column-gap: .85rem; }
+    .tbl tr.rw-row > td { grid-column: 1 / -1; }
+    .tbl tr.rw-row > td.thumb-cell { grid-column: 1; grid-row: 1; width: auto; padding: 0; }
+    .tbl tr.rw-row > td.cell-main { grid-column: 2; grid-row: 1; padding: 0 0 .5rem; }
+    .tbl tr.rw-row .thumb { width: 5rem; }
+    .tbl input[type=number] { width: 6.5rem; }
+  }
+  @media (max-width: 360px) {
+    /* Pantallas muy angostas: la fecha del vale puede ir en dos líneas para que quepa la tabla */
+    .vale td:first-child { white-space: normal; min-width: 4.5rem; }
+    .vale td:nth-child(2) { overflow-wrap: anywhere; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+  @media print {
+    @page { size: letter; margin: 14mm; }
+    body { background: #fff; }
+    body.printing > *:not(#print-area) { display: none !important; }
+    body.printing #print-area { display: block; }
+    #print-area .vale { border: 0; border-top: 8px solid var(--tec); max-width: none; padding: 0 0 0 0; padding-top: 1.25rem; }
+    .vale, .vale * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    /* Compacto para que el vale (con 10 actividades) quepa en una hoja carta */
+    #print-area .vale { font-size: 12px; }
+    #print-area .vale-reward { margin-top: 1.1rem; padding: .8rem 1rem; }
+    #print-area .vale-facts { margin-top: .75rem; padding: .7rem 1rem; gap: .3rem 1.25rem; }
+    #print-area .vale h2 { margin-top: 1.1rem; }
+    #print-area .vale th, #print-area .vale td { padding: .28rem .5rem; }
+    #print-area .vale-sign { margin-top: 1.25rem; break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div id="screen" class="screen" hidden>
+  <div>
+    <svg viewBox="0 0 36 36" aria-hidden="true"><path d="M8 1h7l4.5 12h-7z" fill="#fff" opacity=".9"/><path d="M28 1h-7l-4.5 12h7z" fill="#fff" opacity=".55"/><circle cx="18" cy="23" r="11" fill="#F29111"/><circle cx="18" cy="23" r="8.25" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.2"/><polygon points="18,17.8 19.23,21.3 22.95,21.39 20,23.65 21.06,27.21 18,25.1 14.94,27.21 16,23.65 13.05,21.39 16.77,21.3" fill="#16213A"/></svg>
+    <h1 id="screen-title" data-i18n="loading">Cargando…</h1>
+    <p id="screen-body" hidden></p>
+    <button id="screen-action" class="btn-aws" hidden></button>
+  </div>
+</div>
+
+<div id="app" hidden>
+  <header>
+    <div class="wrap head">
+      <div class="brand">
+        <svg viewBox="0 0 36 36" aria-hidden="true"><path d="M8 1h7l4.5 12h-7z" fill="#fff" opacity=".9"/><path d="M28 1h-7l-4.5 12h7z" fill="#fff" opacity=".55"/><circle cx="18" cy="23" r="11" fill="#F29111"/><circle cx="18" cy="23" r="8.25" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.2"/><polygon points="18,17.8 19.23,21.3 22.95,21.39 20,23.65 21.06,27.21 18,25.1 14.94,27.21 16,23.65 13.05,21.39 16.77,21.3" fill="#16213A"/></svg>
+        <div><b data-i18n="brand">Recompensas</b><small data-i18n="group"></small></div>
+      </div>
+      <div class="lang" id="lang-switch" role="group" data-i18n-aria="lang.group" aria-label="Idioma">
+        <button type="button" data-lang="es" aria-pressed="true" lang="es">
+          <svg viewBox="0 0 30 20" aria-hidden="true"><rect width="10" height="20" fill="#006847"/><rect x="10" width="10" height="20" fill="#fff"/><rect x="20" width="10" height="20" fill="#CE1126"/><circle cx="15" cy="10" r="2.6" fill="#8C5A2B"/><path d="M12.6 11.3q2.4 2 4.8 0" fill="none" stroke="#006847" stroke-width=".9"/></svg>
+          <span class="lg-long">ESPAÑOL</span><span class="lg-short">ES</span>
+        </button>
+        <button type="button" data-lang="en" aria-pressed="false" lang="en">
+          <svg viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="20" fill="#fff"/><g fill="#B22234"><rect width="30" height="1.54"/><rect y="3.08" width="30" height="1.54"/><rect y="6.15" width="30" height="1.54"/><rect y="9.23" width="30" height="1.54"/><rect y="12.31" width="30" height="1.54"/><rect y="15.38" width="30" height="1.54"/><rect y="18.46" width="30" height="1.54"/></g><rect width="12" height="10.77" fill="#3C3B6E"/><g fill="#fff"><circle cx="2.2" cy="2" r=".55"/><circle cx="6" cy="2" r=".55"/><circle cx="9.8" cy="2" r=".55"/><circle cx="4.1" cy="4.2" r=".55"/><circle cx="7.9" cy="4.2" r=".55"/><circle cx="2.2" cy="6.4" r=".55"/><circle cx="6" cy="6.4" r=".55"/><circle cx="9.8" cy="6.4" r=".55"/><circle cx="4.1" cy="8.6" r=".55"/><circle cx="7.9" cy="8.6" r=".55"/></g></svg>
+          <span class="lg-long">ENGLISH</span><span class="lg-short">EN</span>
+        </button>
+      </div>
+      <div class="head-actions" id="guest-actions" hidden>
+        <button id="login-btn" class="btn-aws header-login" data-login data-i18n="login">Iniciar sesión</button>
+        <button class="verify-btn" data-verify data-i18n-aria="verify.aria" aria-label="Verificar vale institucional"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg><span data-i18n-html="verify.btn">Verificar vale<span class="vb-long"> institucional</span></span></button>
+      </div>
+      <div class="who">
+        <div class="user"><small data-i18n="user">Tu usuario</small><span id="user-email"></span></div>
+        <div class="points" aria-live="polite"><small data-i18n="points">Tus puntos</small><strong id="user-points" class="num">…</strong></div>
+        <button class="logout" data-verify data-i18n-aria="verify.aria" aria-label="Verificar vale institucional">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+          <span class="txt" data-i18n="verify.short">Verificar vale</span>
+        </button>
+        <button id="logout" class="logout">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>
+          <span class="txt" data-i18n="logout">Salir</span><span class="sr-only" data-i18n="logout.sr">Cerrar sesión</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Aviso: plataforma independiente y sin fines de lucro (alumnos y visitantes; se oculta en el panel del líder) -->
+  <div class="wrap notice-wrap">
+    <section class="about" aria-labelledby="about-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+      <div>
+        <h2 id="about-title" data-i18n="about.title">Acerca de esta plataforma</h2>
+        <p data-i18n="about.body">Esta plataforma es un proyecto independiente y sin fines de lucro. No está afiliada, patrocinada ni respaldada de ninguna forma por Amazon Web Services (AWS). Su único objetivo es informar sobre los eventos del grupo y motivar a los estudiantes a asistir, otorgándoles puntos que pueden canjear por vales institucionales o artículos promocionales (SWAG) de AWS.</p>
+        <p class="tm" data-i18n="about.tm">AWS y Amazon Web Services son marcas comerciales de Amazon.com, Inc. o sus afiliadas.</p>
+      </div>
+    </section>
+  </div>
+
+  <main class="wrap" id="member-view">
+    <section aria-labelledby="ev-title">
+      <div class="sec-head">
+        <div>
+          <h2 id="ev-title" data-i18n="ev.title">Próximos eventos</h2>
+          <p id="ev-intro">Asiste y suma los puntos de cada actividad a tu cuenta.</p>
+        </div>
+        <div class="card sub" id="sub-card">
+          <div>
+            <b data-i18n="sub.title">Avisos por correo</b>
+            <span id="sub-text">Recibe nuevos eventos y recordatorios</span>
+          </div>
+          <button id="sub-switch" class="switch" role="switch" aria-checked="false" data-i18n-aria="sub.title" aria-label="Avisos por correo" disabled></button>
+        </div>
+      </div>
+      <div id="events"></div>
+    </section>
+
+    <section aria-labelledby="rw-title">
+      <div class="sec-head">
+        <div>
+          <h2 id="rw-title" data-i18n="rw.title">Recompensas</h2>
+          <p id="rw-intro">Canjéalas con tus puntos. Las de AWS se entregan en persona; las institucionales generan un vale que puedes presentar a tus docentes.</p>
+        </div>
+        <div class="filter" id="reward-filter" role="group" data-i18n-aria="filter.aria" aria-label="Filtrar por tipo">
+          <button data-filter="TODAS" aria-pressed="true" data-i18n="filter.all">Todas</button>
+          <button data-filter="AWS" aria-pressed="false">AWS</button>
+          <button data-filter="INSTITUCIONAL" aria-pressed="false" data-i18n="type.inst">Institucional</button>
+        </div>
+      </div>
+      <div id="rewards"></div>
+    </section>
+
+    <section aria-labelledby="rd-title">
+      <div class="sec-head">
+        <div>
+          <h2 id="rd-title" data-i18n="rd.title">Mis canjes</h2>
+          <p data-i18n="rd.sub">Estado de entrega de tus recompensas AWS y vales institucionales para descargar.</p>
+        </div>
+      </div>
+      <div id="redemptions"></div>
+      <div class="more" id="redemptions-more"></div>
+    </section>
+
+    <section aria-labelledby="hi-title">
+      <div class="sec-head">
+        <div>
+          <h2 id="hi-title" data-i18n="hi.title">Mi historial</h2>
+          <p data-i18n="hi.sub">Actividades en las que participaste y canjes realizados.</p>
+        </div>
+      </div>
+      <div id="history"></div>
+      <div class="more" id="history-more"></div>
+    </section>
+
+    <div class="forms">
+      <section class="card panel" aria-labelledby="sg-title">
+        <h2 id="sg-title" data-i18n="sg.title">Sugerencias</h2>
+        <p data-i18n="sg.sub">Ideas para talleres, eventos o recompensas. Puedes enviarla sin tu nombre.</p>
+        <form id="suggestion-form">
+          <label class="f" for="sg-text" data-i18n="sg.label">Tu sugerencia</label>
+          <textarea id="sg-text" class="field" rows="5" minlength="5" maxlength="1000" data-i18n-ph="sg.ph" placeholder="Ej.: Me gustaría un taller de Amazon Bedrock donde construyamos paso a paso un chatbot que responda dudas sobre los reglamentos de la escuela. Si se puede, que sea los viernes por la tarde para no chocar con clases." required></textarea>
+          <p class="count"><span data-count-for="sg-text">0</span>/1000</p>
+          <label class="check"><input type="checkbox" id="sg-anon" /> <span data-i18n="sg.anon">Enviar de forma anónima</span></label>
+          <div class="actions">
+            <button type="submit" class="btn" disabled data-i18n="sg.send">Enviar sugerencia</button>
+            <p class="feedback" role="status"></p>
+          </div>
+        </form>
+        <div id="sg-locked" style="display:contents"></div>
+      </section>
+
+      <section class="card panel" aria-labelledby="ms-title">
+        <h2 id="ms-title" data-i18n="ms.title">Contáctate con el AWS Student Group Leader</h2>
+        <p data-i18n="ms.sub">Dudas o propuestas. La respuesta llegará a tu correo institucional.</p>
+        <form id="message-form">
+          <label class="f" for="ms-subject" data-i18n="ms.subject">Asunto</label>
+          <input id="ms-subject" class="field" minlength="3" maxlength="120" data-i18n-ph="ms.subject.ph" placeholder="Ej.: No aparecen mis puntos del Torneo BuilderCards" required />
+          <label class="f gap" for="ms-text" data-i18n="ms.text">Mensaje</label>
+          <textarea id="ms-text" class="field" rows="4" minlength="10" maxlength="1000" data-i18n-ph="ms.text.ph" placeholder="Ej.: Hola, participé en el Torneo BuilderCards del 29 de septiembre y quedé en segundo lugar, pero los puntos no aparecen en mi historial. ¿Podrías revisarlo? Mi número de control es 00000000. Gracias." required></textarea>
+          <p class="count"><span data-count-for="ms-text">0</span>/1000</p>
+          <div class="actions">
+            <button type="submit" class="btn" disabled data-i18n="ms.send">Enviar mensaje</button>
+            <p class="feedback" role="status"></p>
+          </div>
+        </form>
+        <div id="ms-locked" style="display:contents"></div>
+      </section>
+    </div>
+
+  </main>
+  <!-- ===================== PANEL DEL LÍDER (grupo administrador) ===================== -->
+  <main class="wrap" id="admin-view" hidden>
+    <div class="admin-head">
+      <h1 class="admin-title" data-i18n="a.title">Panel del AWS Student Group Leader</h1>
+      <p data-i18n="a.sub">Administra eventos, asistencia, recompensas y solicitudes de canje del grupo.</p>
+    </div>
+
+    <nav class="tabs" role="tablist" data-i18n-aria="a.tabs" aria-label="Secciones del panel">
+      <button role="tab" id="tab-canjes" data-tab="canjes" aria-selected="true" data-i18n="a.tab.canjes">Solicitudes de canje</button>
+      <button role="tab" id="tab-eventos" data-tab="eventos" aria-selected="false" data-i18n="a.tab.eventos">Eventos y asistencia</button>
+      <button role="tab" id="tab-recompensas" data-tab="recompensas" aria-selected="false" data-i18n="rw.title">Recompensas</button>
+      <button role="tab" id="tab-sugerencias" data-tab="sugerencias" aria-selected="false" data-i18n="a.tab.sugerencias">Buzón de sugerencias</button>
+      <button role="tab" id="tab-mensajes" data-tab="mensajes" aria-selected="false" data-i18n="a.tab.mensajes">Mensajes</button>
+    </nav>
+
+    <!-- Canjes -->
+    <section data-panel="canjes" role="tabpanel" aria-labelledby="tab-canjes">
+      <div class="sec-head">
+        <div>
+          <h2 data-i18n="a.tab.canjes">Solicitudes de canje</h2>
+          <p data-i18n="a.rdm.sub">Entrega las recompensas AWS y marca como aplicados los vales cuando un docente te avise. Los canjes no se cancelan: si hace falta (por ejemplo, si lo solicita un docente) se reembolsan, se devuelven los puntos al alumno y la unidad regresa al stock.</p>
+        </div>
+      </div>
+      <!-- Filtros agrupados por tipo de recompensa; los reembolsos aplican a ambos tipos -->
+      <div class="rdm-groups" id="rdm-filter">
+        <div class="rdm-group" role="group" aria-labelledby="rg-aws">
+          <span class="glabel" id="rg-aws"><i class="dot dot-aws"></i>AWS</span>
+          <div class="filter">
+            <button data-rstatus="PENDIENTE" aria-pressed="true" data-i18n="a.f.pending">Por entregar</button>
+            <button data-rstatus="ENTREGADO" aria-pressed="false" data-i18n="a.f.delivered">Entregados</button>
+          </div>
+        </div>
+        <div class="rdm-group" role="group" aria-labelledby="rg-tec">
+          <span class="glabel" id="rg-tec"><i class="dot dot-tec"></i><span data-i18n="type.inst">Institucional</span></span>
+          <div class="filter">
+            <button data-rstatus="VIGENTE" aria-pressed="false" data-i18n="a.f.valid">Vigentes</button>
+            <button data-rstatus="APLICADO" aria-pressed="false" data-i18n="a.f.used">Aplicados</button>
+          </div>
+        </div>
+        <div class="rdm-group" role="group" aria-labelledby="rg-both">
+          <span class="glabel" id="rg-both"><i class="dot dot-both"></i><span data-i18n="a.f.both">Ambos</span></span>
+          <div class="filter">
+            <button data-rstatus="REEMBOLSADO" aria-pressed="false" data-i18n="a.f.refunded">Reembolsados</button>
+          </div>
+        </div>
+      </div>
+      <div id="adm-redemptions"></div>
+      <div class="more" id="adm-redemptions-more"></div>
+    </section>
+
+    <!-- Eventos y asistencia -->
+    <section data-panel="eventos" role="tabpanel" aria-labelledby="tab-eventos" hidden>
+      <div class="admin-grid">
+        <div class="card panel">
+          <h2 data-i18n="a.ev.create">Crear evento</h2>
+          <p data-i18n="a.ev.create.sub">Aparecerá en Próximos eventos para todos.</p>
+          <form id="event-form">
+            <label class="f" for="ev-title-in" data-i18n="a.f.title">Título</label>
+            <input id="ev-title-in" class="field" maxlength="120" required data-i18n-ph="a.ph.evtitle" placeholder="Ej.: Taller: tu primera API con Lambda y API Gateway" />
+            <div class="row2 gap">
+              <div>
+                <label class="f" for="ev-date" data-i18n="a.f.datetime">Fecha y hora</label>
+                <input id="ev-date" class="field" type="datetime-local" required />
+              </div>
+              <div>
+                <label class="f" for="ev-points" data-i18n="a.f.points">Puntos</label>
+                <input id="ev-points" class="field" type="number" min="0" max="10000" step="1" required data-i18n-ph="a.ph.evpoints" placeholder="Ej.: 80" />
+              </div>
+            </div>
+            <label class="f gap" for="ev-location" data-i18n="a.f.location">Lugar</label>
+            <input id="ev-location" class="field" maxlength="120" required data-i18n-ph="a.ph.location" placeholder="Ej.: Laboratorio de Cómputo 2" />
+            <label class="f gap" for="ev-desc" data-i18n="a.f.desc.opt">Descripción (opcional)</label>
+            <textarea id="ev-desc" class="field" rows="3" maxlength="500" data-i18n-ph="a.ph.evdesc" placeholder="Ej.: Trae tu laptop con una cuenta de AWS creada."></textarea>
+            <div class="actions">
+              <button type="submit" class="btn" data-i18n="a.ev.create">Crear evento</button>
+              <p class="feedback" role="status"></p>
+            </div>
+          </form>
+        </div>
+
+        <div class="card panel">
+          <h2 data-i18n="a.att.title">Registrar asistencia</h2>
+          <p data-i18n="a.att.sub">Suma los puntos del evento a cada alumno.</p>
+          <form id="att-form">
+            <label class="f" for="att-event" data-i18n="a.f.event">Evento</label>
+            <select id="att-event" class="field" required><option value="" data-i18n="a.att.loading">Cargando eventos…</option></select>
+            <label class="f gap" for="att-emails" data-i18n="a.f.students">Alumnos</label>
+            <textarea id="att-emails" class="field uuid" rows="6" required data-i18n-ph="a.ph.emails" placeholder="Ej.:&#10;l00000001&#10;l00000002@example.edu&#10;l00000003"></textarea>
+            <p class="hint" data-i18n="a.att.hint">Si escribes solo el usuario (l00000001) se completa con el dominio institucional. Si un alumno ya estaba registrado, no se le suman puntos dos veces. Solo se registra a alumnos con cuenta en la plataforma.</p>
+            <div class="actions">
+              <button type="submit" class="btn" data-i18n="a.att.title">Registrar asistencia</button>
+              <p class="feedback" role="status"></p>
+            </div>
+          </form>
+          <div id="att-list"></div>
+        </div>
+      </div>
+
+      <div class="sec-head" style="margin-top:2.5rem">
+        <div><h2 data-i18n="a.ev.list">Eventos</h2><p data-i18n="a.newest">Del más reciente al más antiguo.</p></div>
+        <div class="filter" role="group" data-i18n-aria="a.ev.show" aria-label="Mostrar eventos">
+          <button data-evs="active" aria-pressed="true" data-i18n="a.f.active">Activos</button>
+          <button data-evs="deleted" aria-pressed="false" data-i18n="a.f.deleted">Eliminados</button>
+        </div>
+      </div>
+      <div id="adm-events"></div>
+      <div class="more" id="adm-events-more"></div>
+    </section>
+
+    <!-- Recompensas -->
+    <section data-panel="recompensas" role="tabpanel" aria-labelledby="tab-recompensas" hidden>
+      <div class="admin-grid">
+        <div class="card panel">
+          <h2 data-i18n="a.rw.new">Nueva recompensa</h2>
+          <form id="reward-form">
+            <label class="f" for="rw-name" data-i18n="a.f.name">Nombre</label>
+            <input id="rw-name" class="field" maxlength="120" required data-i18n-ph="a.ph.rwname" placeholder="Ej.: Camisa de AWS" />
+            <label class="f gap" for="rw-desc" data-i18n="vf.desc">Descripción</label>
+            <textarea id="rw-desc" class="field" rows="3" maxlength="400" data-i18n-ph="a.ph.rwdesc" placeholder="Ej.: Color morado, cualquier talla. Se entrega en la siguiente reunión del grupo."></textarea>
+            <div class="row2 gap">
+              <div>
+                <label class="f" for="rw-points" data-i18n="a.f.points">Puntos</label>
+                <input id="rw-points" class="field" type="number" min="1" max="100000" step="1" required data-i18n-ph="a.ph.rwpoints" placeholder="Ej.: 800" />
+              </div>
+              <div>
+                <label class="f" for="rw-stock">Stock</label>
+                <input id="rw-stock" class="field" type="number" min="0" max="10000" required data-i18n-ph="a.ph.rwstock" placeholder="Ej.: 10" />
+              </div>
+            </div>
+            <span class="f gap" id="rw-type-label" style="display:block;font-size:.875rem;font-weight:600" data-i18n="a.f.type">Tipo</span>
+            <div class="seg" role="radiogroup" aria-labelledby="rw-type-label">
+              <label><input type="radio" name="rw-type" value="AWS" required /><span>AWS</span></label>
+              <label><input type="radio" name="rw-type" value="INSTITUCIONAL" /><span data-i18n="type.inst">Institucional</span></label>
+            </div>
+            <label class="f gap" for="rw-image" data-i18n="a.f.image.opt">Opcionalmente una imagen</label>
+            <input id="rw-image" class="field" type="file" accept="image/png,image/jpeg,image/webp" />
+            <p class="hint" data-i18n="a.img.hint">PNG, JPG o WebP de máximo 5 MB. Se muestra completa; se ve mejor en formato 4:3.</p>
+            <div class="actions">
+              <button type="submit" class="btn" data-i18n="a.rw.create">Crear recompensa</button>
+              <p class="feedback" role="status"></p>
+            </div>
+          </form>
+        </div>
+
+        <div>
+          <div class="sec-head">
+            <div><h2 style="font-size:1.35rem" data-i18n="a.rw.catalog">Catálogo</h2><p data-i18n="a.rw.catalog.sub">De la más reciente a la más antigua. Ocultar no borra la recompensa.</p></div>
+            <div class="filter" role="group" data-i18n-aria="a.rw.show" aria-label="Mostrar recompensas">
+              <button data-rws="active" aria-pressed="true" data-i18n="a.f.visible">Visibles</button>
+              <button data-rws="inactive" aria-pressed="false" data-i18n="a.f.hidden">Ocultas</button>
+            </div>
+          </div>
+          <div id="adm-rewards"></div>
+          <div class="more" id="adm-rewards-more"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Buzón de sugerencias -->
+    <section data-panel="sugerencias" role="tabpanel" aria-labelledby="tab-sugerencias" hidden>
+      <div class="sec-head">
+        <div>
+          <h2 data-i18n="a.tab.sugerencias">Buzón de sugerencias</h2>
+          <p data-i18n="a.sg.sub">Ideas que envían los alumnos para talleres, eventos o recompensas. Las anónimas no guardan el correo.</p>
+        </div>
+        <div class="filter" id="sg-filter" role="group" data-i18n-aria="a.sg.filter" aria-label="Filtrar sugerencias">
+          <button data-sgf="TODAS" aria-pressed="true" data-i18n="filter.all">Todas</button>
+          <button data-sgf="CON" aria-pressed="false" data-i18n="a.f.named">Con nombre</button>
+          <button data-sgf="ANON" aria-pressed="false" data-i18n="a.f.anon">Anónimas</button>
+        </div>
+      </div>
+      <div id="adm-suggestions"></div>
+      <div class="more" id="adm-suggestions-more"></div>
+    </section>
+
+    <!-- Mensajes -->
+    <section data-panel="mensajes" role="tabpanel" aria-labelledby="tab-mensajes" hidden>
+      <div class="sec-head">
+        <div>
+          <h2 data-i18n="a.tab.mensajes">Mensajes</h2>
+          <p data-i18n="a.ms.sub">Enviados desde Contáctate con el AWS Student Group Leader. Responde directo al correo del alumno.</p>
+        </div>
+      </div>
+      <div id="adm-messages"></div>
+      <div class="more" id="adm-messages-more"></div>
+    </section>
+  </main>
+
+
+  <footer><p class="wrap" data-i18n="footer"></p></footer>
+</div>
+
+<!-- Diálogo de canje -->
+<dialog id="redeem-dialog" aria-labelledby="rd-dlg-title">
+  <div class="dlg" id="redeem-content"></div>
+</dialog>
+
+<!-- Diálogo del vale institucional -->
+<!-- Diálogo de verificación de vales (docentes) -->
+<dialog id="verify-dialog" aria-labelledby="vf-title">
+  <div id="verify-content"></div>
+</dialog>
+
+<!-- Confirmaciones y avisos (reemplazan confirm() y alert() del navegador) -->
+<dialog id="confirm-dialog" aria-labelledby="cf-title" aria-describedby="cf-message">
+  <div class="dlg">
+    <div class="dlg-top">
+      <h2 id="cf-title"></h2>
+      <button class="icon-close" type="button" data-cf="cancel" data-i18n-aria="close" aria-label="Cerrar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <p id="cf-message"></p>
+    <div class="actions">
+      <button type="button" class="btn-ghost" data-cf="cancel" id="cf-cancel">Cancelar</button>
+      <button type="button" class="btn" data-cf="ok" id="cf-ok">Aceptar</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- Visor de imagen completa -->
+<dialog id="image-dialog" aria-labelledby="image-caption">
+  <div class="lightbox">
+    <button class="icon-close lb-close" type="button" data-close-image data-i18n-aria="close" aria-label="Cerrar">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <img id="image-full" alt="" />
+    <p id="image-caption"></p>
+  </div>
+</dialog>
+
+<!-- Edición de evento (panel del líder) -->
+<dialog id="event-edit-dialog" aria-labelledby="eve-title">
+  <div class="dlg" id="event-edit-content"></div>
+</dialog>
+
+<!-- Edición de recompensa (panel del líder) -->
+<dialog id="reward-edit-dialog" aria-labelledby="rwe-title">
+  <div class="dlg" id="reward-edit-content"></div>
+</dialog>
+
+<dialog id="voucher-dialog" data-i18n-aria="voucher.title" aria-label="Vale institucional">
+  <div class="voucher-bar">
+    <b data-i18n="voucher.title">Vale institucional</b>
+    <div>
+      <button class="btn btn-sm" id="voucher-print" data-i18n="voucher.pdf">Descargar PDF</button>
+      <button class="btn-ghost btn-sm" id="voucher-close" data-i18n="close">Cerrar</button>
+    </div>
+  </div>
+  <div class="voucher-scroll" id="voucher-content"></div>
+</dialog>
+
+<div id="print-area"></div>
+
+<!--
+  QR Code Generator for JavaScript 1.4.4 — Copyright (c) 2009 Kazuhiko Arase
+  Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
+  Se incluye en el archivo para generar el QR de los vales sin depender de un CDN.
+-->
+<script>var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],f={},c=function(t,r){o=function(t){for(var r=new Array(t),e=0;e<t;e+=1){r[e]=new Array(t);for(var n=0;n<t;n+=1)r[e][n]=null}return r}(i=4*e+17),l(0,0),l(i-7,0),l(0,i-7),s(),h(),d(t,r),e>=7&&v(t),null==a&&(a=p(e,n,u)),w(a,r)},l=function(t,r){for(var e=-1;e<=7;e+=1)if(!(t+e<=-1||i<=t+e))for(var n=-1;n<=7;n+=1)r+n<=-1||i<=r+n||(o[t+e][r+n]=0<=e&&e<=6&&(0==n||6==n)||0<=n&&n<=6&&(0==e||6==e)||2<=e&&e<=4&&2<=n&&n<=4)},h=function(){for(var t=8;t<i-8;t+=1)null==o[t][6]&&(o[t][6]=t%2==0);for(var r=8;r<i-8;r+=1)null==o[6][r]&&(o[6][r]=r%2==0)},s=function(){for(var t=B.getPatternPosition(e),r=0;r<t.length;r+=1)for(var n=0;n<t.length;n+=1){var i=t[r],a=t[n];if(null==o[i][a])for(var u=-2;u<=2;u+=1)for(var f=-2;f<=2;f+=1)o[i+u][a+f]=-2==u||2==u||-2==f||2==f||0==u&&0==f}},v=function(t){for(var r=B.getBCHTypeNumber(e),n=0;n<18;n+=1){var a=!t&&1==(r>>n&1);o[Math.floor(n/3)][n%3+i-8-3]=a}for(n=0;n<18;n+=1){a=!t&&1==(r>>n&1);o[n%3+i-8-3][Math.floor(n/3)]=a}},d=function(t,r){for(var e=n<<3|r,a=B.getBCHTypeInfo(e),u=0;u<15;u+=1){var f=!t&&1==(a>>u&1);u<6?o[u][8]=f:u<8?o[u+1][8]=f:o[i-15+u][8]=f}for(u=0;u<15;u+=1){f=!t&&1==(a>>u&1);u<8?o[8][i-u-1]=f:u<9?o[8][15-u-1+1]=f:o[8][15-u-1]=f}o[i-8][8]=!t},w=function(t,r){for(var e=-1,n=i-1,a=7,u=0,f=B.getMaskFunction(r),c=i-1;c>0;c-=2)for(6==c&&(c-=1);;){for(var g=0;g<2;g+=1)if(null==o[n][c-g]){var l=!1;u<t.length&&(l=1==(t[u]>>>a&1)),f(n,c-g)&&(l=!l),o[n][c-g]=l,-1==(a-=1)&&(u+=1,a=7)}if((n+=e)<0||i<=n){n-=e,e=-e;break}}},p=function(t,r,e){for(var n=A.getRSBlocks(t,r),o=b(),i=0;i<e.length;i+=1){var a=e[i];o.put(a.getMode(),4),o.put(a.getLength(),B.getLengthInBits(a.getMode(),t)),a.write(o)}var u=0;for(i=0;i<n.length;i+=1)u+=n[i].dataCount;if(o.getLengthInBits()>8*u)throw"code length overflow. ("+o.getLengthInBits()+">"+8*u+")";for(o.getLengthInBits()+4<=8*u&&o.put(0,4);o.getLengthInBits()%8!=0;)o.putBit(!1);for(;!(o.getLengthInBits()>=8*u||(o.put(236,8),o.getLengthInBits()>=8*u));)o.put(17,8);return function(t,r){for(var e=0,n=0,o=0,i=new Array(r.length),a=new Array(r.length),u=0;u<r.length;u+=1){var f=r[u].dataCount,c=r[u].totalCount-f;n=Math.max(n,f),o=Math.max(o,c),i[u]=new Array(f);for(var g=0;g<i[u].length;g+=1)i[u][g]=255&t.getBuffer()[g+e];e+=f;var l=B.getErrorCorrectPolynomial(c),h=k(i[u],l.getLength()-1).mod(l);for(a[u]=new Array(l.getLength()-1),g=0;g<a[u].length;g+=1){var s=g+h.getLength()-a[u].length;a[u][g]=s>=0?h.getAt(s):0}}var v=0;for(g=0;g<r.length;g+=1)v+=r[g].totalCount;var d=new Array(v),w=0;for(g=0;g<n;g+=1)for(u=0;u<r.length;u+=1)g<i[u].length&&(d[w]=i[u][g],w+=1);for(g=0;g<o;g+=1)for(u=0;u<r.length;u+=1)g<a[u].length&&(d[w]=a[u][g],w+=1);return d}(o,n)};f.addData=function(t,r){var e=null;switch(r=r||"Byte"){case"Numeric":e=M(t);break;case"Alphanumeric":e=x(t);break;case"Byte":e=m(t);break;case"Kanji":e=L(t);break;default:throw"mode:"+r}u.push(e),a=null},f.isDark=function(t,r){if(t<0||i<=t||r<0||i<=r)throw t+","+r;return o[t][r]},f.getModuleCount=function(){return i},f.make=function(){if(e<1){for(var t=1;t<40;t++){for(var r=A.getRSBlocks(t,n),o=b(),i=0;i<u.length;i++){var a=u[i];o.put(a.getMode(),4),o.put(a.getLength(),B.getLengthInBits(a.getMode(),t)),a.write(o)}var g=0;for(i=0;i<r.length;i++)g+=r[i].dataCount;if(o.getLengthInBits()<=8*g)break}e=t}c(!1,function(){for(var t=0,r=0,e=0;e<8;e+=1){c(!0,e);var n=B.getLostPoint(f);(0==e||t>n)&&(t=n,r=e)}return r}())},f.createTableTag=function(t,r){t=t||2;var e="";e+='<table style="',e+=" border-width: 0px; border-style: none;",e+=" border-collapse: collapse;",e+=" padding: 0px; margin: "+(r=void 0===r?4*t:r)+"px;",e+='">',e+="<tbody>";for(var n=0;n<f.getModuleCount();n+=1){e+="<tr>";for(var o=0;o<f.getModuleCount();o+=1)e+='<td style="',e+=" border-width: 0px; border-style: none;",e+=" border-collapse: collapse;",e+=" padding: 0px; margin: 0px;",e+=" width: "+t+"px;",e+=" height: "+t+"px;",e+=" background-color: ",e+=f.isDark(n,o)?"#000000":"#ffffff",e+=";",e+='"/>';e+="</tr>"}return e+="</tbody>",e+="</table>"},f.createSvgTag=function(t,r,e,n){var o={};"object"==typeof arguments[0]&&(t=(o=arguments[0]).cellSize,r=o.margin,e=o.alt,n=o.title),t=t||2,r=void 0===r?4*t:r,(e="string"==typeof e?{text:e}:e||{}).text=e.text||null,e.id=e.text?e.id||"qrcode-description":null,(n="string"==typeof n?{text:n}:n||{}).text=n.text||null,n.id=n.text?n.id||"qrcode-title":null;var i,a,u,c,g=f.getModuleCount()*t+2*r,l="";for(c="l"+t+",0 0,"+t+" -"+t+",0 0,-"+t+"z ",l+='<svg version="1.1" xmlns="http://www.w3.org/2000/svg"',l+=o.scalable?"":' width="'+g+'px" height="'+g+'px"',l+=' viewBox="0 0 '+g+" "+g+'" ',l+=' preserveAspectRatio="xMinYMin meet"',l+=n.text||e.text?' role="img" aria-labelledby="'+y([n.id,e.id].join(" ").trim())+'"':"",l+=">",l+=n.text?'<title id="'+y(n.id)+'">'+y(n.text)+"</title>":"",l+=e.text?'<description id="'+y(e.id)+'">'+y(e.text)+"</description>":"",l+='<rect width="100%" height="100%" fill="white" cx="0" cy="0"/>',l+='<path d="',a=0;a<f.getModuleCount();a+=1)for(u=a*t+r,i=0;i<f.getModuleCount();i+=1)f.isDark(a,i)&&(l+="M"+(i*t+r)+","+u+c);return l+='" stroke="transparent" fill="black"/>',l+="</svg>"},f.createDataURL=function(t,r){t=t||2,r=void 0===r?4*t:r;var e=f.getModuleCount()*t+2*r,n=r,o=e-r;return I(e,e,(function(r,e){if(n<=r&&r<o&&n<=e&&e<o){var i=Math.floor((r-n)/t),a=Math.floor((e-n)/t);return f.isDark(a,i)?0:1}return 1}))},f.createImgTag=function(t,r,e){t=t||2,r=void 0===r?4*t:r;var n=f.getModuleCount()*t+2*r,o="";return o+="<img",o+=' src="',o+=f.createDataURL(t,r),o+='"',o+=' width="',o+=n,o+='"',o+=' height="',o+=n,o+='"',e&&(o+=' alt="',o+=y(e),o+='"'),o+="/>"};var y=function(t){for(var r="",e=0;e<t.length;e+=1){var n=t.charAt(e);switch(n){case"<":r+="&lt;";break;case">":r+="&gt;";break;case"&":r+="&amp;";break;case'"':r+="&quot;";break;default:r+=n}}return r};return f.createASCII=function(t,r){if((t=t||1)<2)return function(t){t=void 0===t?2:t;var r,e,n,o,i,a=1*f.getModuleCount()+2*t,u=t,c=a-t,g={"██":"█","█ ":"▀"," █":"▄","  ":" "},l={"██":"▀","█ ":"▀"," █":" ","  ":" "},h="";for(r=0;r<a;r+=2){for(n=Math.floor((r-u)/1),o=Math.floor((r+1-u)/1),e=0;e<a;e+=1)i="█",u<=e&&e<c&&u<=r&&r<c&&f.isDark(n,Math.floor((e-u)/1))&&(i=" "),u<=e&&e<c&&u<=r+1&&r+1<c&&f.isDark(o,Math.floor((e-u)/1))?i+=" ":i+="█",h+=t<1&&r+1>=c?l[i]:g[i];h+="\n"}return a%2&&t>0?h.substring(0,h.length-a-1)+Array(a+1).join("▀"):h.substring(0,h.length-1)}(r);t-=1,r=void 0===r?2*t:r;var e,n,o,i,a=f.getModuleCount()*t+2*r,u=r,c=a-r,g=Array(t+1).join("██"),l=Array(t+1).join("  "),h="",s="";for(e=0;e<a;e+=1){for(o=Math.floor((e-u)/t),s="",n=0;n<a;n+=1)i=1,u<=n&&n<c&&u<=e&&e<c&&f.isDark(o,Math.floor((n-u)/t))&&(i=0),s+=i?g:l;for(o=0;o<t;o+=1)h+=s+"\n"}return h.substring(0,h.length-1)},f.renderTo2dContext=function(t,r){r=r||2;for(var e=f.getModuleCount(),n=0;n<e;n++)for(var o=0;o<e;o++)t.fillStyle=f.isDark(n,o)?"black":"white",t.fillRect(n*r,o*r,r,r)},f};t.stringToBytes=(t.stringToBytesFuncs={default:function(t){for(var r=[],e=0;e<t.length;e+=1){var n=t.charCodeAt(e);r.push(255&n)}return r}}).default,t.createStringToBytes=function(t,r){var e=function(){for(var e=S(t),n=function(){var t=e.read();if(-1==t)throw"eof";return t},o=0,i={};;){var a=e.read();if(-1==a)break;var u=n(),f=n()<<8|n();i[String.fromCharCode(a<<8|u)]=f,o+=1}if(o!=r)throw o+" != "+r;return i}(),n="?".charCodeAt(0);return function(t){for(var r=[],o=0;o<t.length;o+=1){var i=t.charCodeAt(o);if(i<128)r.push(i);else{var a=e[t.charAt(o)];"number"==typeof a?(255&a)==a?r.push(a):(r.push(a>>>8),r.push(255&a)):r.push(n)}}return r}};var r,e,n,o,i,a=1,u=2,f=4,c=8,g={L:1,M:0,Q:3,H:2},l=0,h=1,s=2,v=3,d=4,w=5,p=6,y=7,B=(r=[[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50],[6,30,54],[6,32,58],[6,34,62],[6,26,46,66],[6,26,48,70],[6,26,50,74],[6,30,54,78],[6,30,56,82],[6,30,58,86],[6,34,62,90],[6,28,50,72,94],[6,26,50,74,98],[6,30,54,78,102],[6,28,54,80,106],[6,32,58,84,110],[6,30,58,86,114],[6,34,62,90,118],[6,26,50,74,98,122],[6,30,54,78,102,126],[6,26,52,78,104,130],[6,30,56,82,108,134],[6,34,60,86,112,138],[6,30,58,86,114,142],[6,34,62,90,118,146],[6,30,54,78,102,126,150],[6,24,50,76,102,128,154],[6,28,54,80,106,132,158],[6,32,58,84,110,136,162],[6,26,54,82,110,138,166],[6,30,58,86,114,142,170]],e=1335,n=7973,i=function(t){for(var r=0;0!=t;)r+=1,t>>>=1;return r},(o={}).getBCHTypeInfo=function(t){for(var r=t<<10;i(r)-i(e)>=0;)r^=e<<i(r)-i(e);return 21522^(t<<10|r)},o.getBCHTypeNumber=function(t){for(var r=t<<12;i(r)-i(n)>=0;)r^=n<<i(r)-i(n);return t<<12|r},o.getPatternPosition=function(t){return r[t-1]},o.getMaskFunction=function(t){switch(t){case l:return function(t,r){return(t+r)%2==0};case h:return function(t,r){return t%2==0};case s:return function(t,r){return r%3==0};case v:return function(t,r){return(t+r)%3==0};case d:return function(t,r){return(Math.floor(t/2)+Math.floor(r/3))%2==0};case w:return function(t,r){return t*r%2+t*r%3==0};case p:return function(t,r){return(t*r%2+t*r%3)%2==0};case y:return function(t,r){return(t*r%3+(t+r)%2)%2==0};default:throw"bad maskPattern:"+t}},o.getErrorCorrectPolynomial=function(t){for(var r=k([1],0),e=0;e<t;e+=1)r=r.multiply(k([1,C.gexp(e)],0));return r},o.getLengthInBits=function(t,r){if(1<=r&&r<10)switch(t){case a:return 10;case u:return 9;case f:case c:return 8;default:throw"mode:"+t}else if(r<27)switch(t){case a:return 12;case u:return 11;case f:return 16;case c:return 10;default:throw"mode:"+t}else{if(!(r<41))throw"type:"+r;switch(t){case a:return 14;case u:return 13;case f:return 16;case c:return 12;default:throw"mode:"+t}}},o.getLostPoint=function(t){for(var r=t.getModuleCount(),e=0,n=0;n<r;n+=1)for(var o=0;o<r;o+=1){for(var i=0,a=t.isDark(n,o),u=-1;u<=1;u+=1)if(!(n+u<0||r<=n+u))for(var f=-1;f<=1;f+=1)o+f<0||r<=o+f||0==u&&0==f||a==t.isDark(n+u,o+f)&&(i+=1);i>5&&(e+=3+i-5)}for(n=0;n<r-1;n+=1)for(o=0;o<r-1;o+=1){var c=0;t.isDark(n,o)&&(c+=1),t.isDark(n+1,o)&&(c+=1),t.isDark(n,o+1)&&(c+=1),t.isDark(n+1,o+1)&&(c+=1),0!=c&&4!=c||(e+=3)}for(n=0;n<r;n+=1)for(o=0;o<r-6;o+=1)t.isDark(n,o)&&!t.isDark(n,o+1)&&t.isDark(n,o+2)&&t.isDark(n,o+3)&&t.isDark(n,o+4)&&!t.isDark(n,o+5)&&t.isDark(n,o+6)&&(e+=40);for(o=0;o<r;o+=1)for(n=0;n<r-6;n+=1)t.isDark(n,o)&&!t.isDark(n+1,o)&&t.isDark(n+2,o)&&t.isDark(n+3,o)&&t.isDark(n+4,o)&&!t.isDark(n+5,o)&&t.isDark(n+6,o)&&(e+=40);var g=0;for(o=0;o<r;o+=1)for(n=0;n<r;n+=1)t.isDark(n,o)&&(g+=1);return e+=Math.abs(100*g/r/r-50)/5*10},o),C=function(){for(var t=new Array(256),r=new Array(256),e=0;e<8;e+=1)t[e]=1<<e;for(e=8;e<256;e+=1)t[e]=t[e-4]^t[e-5]^t[e-6]^t[e-8];for(e=0;e<255;e+=1)r[t[e]]=e;var n={glog:function(t){if(t<1)throw"glog("+t+")";return r[t]},gexp:function(r){for(;r<0;)r+=255;for(;r>=256;)r-=255;return t[r]}};return n}();function k(t,r){if(void 0===t.length)throw t.length+"/"+r;var e=function(){for(var e=0;e<t.length&&0==t[e];)e+=1;for(var n=new Array(t.length-e+r),o=0;o<t.length-e;o+=1)n[o]=t[o+e];return n}(),n={getAt:function(t){return e[t]},getLength:function(){return e.length},multiply:function(t){for(var r=new Array(n.getLength()+t.getLength()-1),e=0;e<n.getLength();e+=1)for(var o=0;o<t.getLength();o+=1)r[e+o]^=C.gexp(C.glog(n.getAt(e))+C.glog(t.getAt(o)));return k(r,0)},mod:function(t){if(n.getLength()-t.getLength()<0)return n;for(var r=C.glog(n.getAt(0))-C.glog(t.getAt(0)),e=new Array(n.getLength()),o=0;o<n.getLength();o+=1)e[o]=n.getAt(o);for(o=0;o<t.getLength();o+=1)e[o]^=C.gexp(C.glog(t.getAt(o))+r);return k(e,0).mod(t)}};return n}var A=function(){var t=[[1,26,19],[1,26,16],[1,26,13],[1,26,9],[1,44,34],[1,44,28],[1,44,22],[1,44,16],[1,70,55],[1,70,44],[2,35,17],[2,35,13],[1,100,80],[2,50,32],[2,50,24],[4,25,9],[1,134,108],[2,67,43],[2,33,15,2,34,16],[2,33,11,2,34,12],[2,86,68],[4,43,27],[4,43,19],[4,43,15],[2,98,78],[4,49,31],[2,32,14,4,33,15],[4,39,13,1,40,14],[2,121,97],[2,60,38,2,61,39],[4,40,18,2,41,19],[4,40,14,2,41,15],[2,146,116],[3,58,36,2,59,37],[4,36,16,4,37,17],[4,36,12,4,37,13],[2,86,68,2,87,69],[4,69,43,1,70,44],[6,43,19,2,44,20],[6,43,15,2,44,16],[4,101,81],[1,80,50,4,81,51],[4,50,22,4,51,23],[3,36,12,8,37,13],[2,116,92,2,117,93],[6,58,36,2,59,37],[4,46,20,6,47,21],[7,42,14,4,43,15],[4,133,107],[8,59,37,1,60,38],[8,44,20,4,45,21],[12,33,11,4,34,12],[3,145,115,1,146,116],[4,64,40,5,65,41],[11,36,16,5,37,17],[11,36,12,5,37,13],[5,109,87,1,110,88],[5,65,41,5,66,42],[5,54,24,7,55,25],[11,36,12,7,37,13],[5,122,98,1,123,99],[7,73,45,3,74,46],[15,43,19,2,44,20],[3,45,15,13,46,16],[1,135,107,5,136,108],[10,74,46,1,75,47],[1,50,22,15,51,23],[2,42,14,17,43,15],[5,150,120,1,151,121],[9,69,43,4,70,44],[17,50,22,1,51,23],[2,42,14,19,43,15],[3,141,113,4,142,114],[3,70,44,11,71,45],[17,47,21,4,48,22],[9,39,13,16,40,14],[3,135,107,5,136,108],[3,67,41,13,68,42],[15,54,24,5,55,25],[15,43,15,10,44,16],[4,144,116,4,145,117],[17,68,42],[17,50,22,6,51,23],[19,46,16,6,47,17],[2,139,111,7,140,112],[17,74,46],[7,54,24,16,55,25],[34,37,13],[4,151,121,5,152,122],[4,75,47,14,76,48],[11,54,24,14,55,25],[16,45,15,14,46,16],[6,147,117,4,148,118],[6,73,45,14,74,46],[11,54,24,16,55,25],[30,46,16,2,47,17],[8,132,106,4,133,107],[8,75,47,13,76,48],[7,54,24,22,55,25],[22,45,15,13,46,16],[10,142,114,2,143,115],[19,74,46,4,75,47],[28,50,22,6,51,23],[33,46,16,4,47,17],[8,152,122,4,153,123],[22,73,45,3,74,46],[8,53,23,26,54,24],[12,45,15,28,46,16],[3,147,117,10,148,118],[3,73,45,23,74,46],[4,54,24,31,55,25],[11,45,15,31,46,16],[7,146,116,7,147,117],[21,73,45,7,74,46],[1,53,23,37,54,24],[19,45,15,26,46,16],[5,145,115,10,146,116],[19,75,47,10,76,48],[15,54,24,25,55,25],[23,45,15,25,46,16],[13,145,115,3,146,116],[2,74,46,29,75,47],[42,54,24,1,55,25],[23,45,15,28,46,16],[17,145,115],[10,74,46,23,75,47],[10,54,24,35,55,25],[19,45,15,35,46,16],[17,145,115,1,146,116],[14,74,46,21,75,47],[29,54,24,19,55,25],[11,45,15,46,46,16],[13,145,115,6,146,116],[14,74,46,23,75,47],[44,54,24,7,55,25],[59,46,16,1,47,17],[12,151,121,7,152,122],[12,75,47,26,76,48],[39,54,24,14,55,25],[22,45,15,41,46,16],[6,151,121,14,152,122],[6,75,47,34,76,48],[46,54,24,10,55,25],[2,45,15,64,46,16],[17,152,122,4,153,123],[29,74,46,14,75,47],[49,54,24,10,55,25],[24,45,15,46,46,16],[4,152,122,18,153,123],[13,74,46,32,75,47],[48,54,24,14,55,25],[42,45,15,32,46,16],[20,147,117,4,148,118],[40,75,47,7,76,48],[43,54,24,22,55,25],[10,45,15,67,46,16],[19,148,118,6,149,119],[18,75,47,31,76,48],[34,54,24,34,55,25],[20,45,15,61,46,16]],r=function(t,r){var e={};return e.totalCount=t,e.dataCount=r,e},e={};return e.getRSBlocks=function(e,n){var o=function(r,e){switch(e){case g.L:return t[4*(r-1)+0];case g.M:return t[4*(r-1)+1];case g.Q:return t[4*(r-1)+2];case g.H:return t[4*(r-1)+3];default:return}}(e,n);if(void 0===o)throw"bad rs block @ typeNumber:"+e+"/errorCorrectionLevel:"+n;for(var i=o.length/3,a=[],u=0;u<i;u+=1)for(var f=o[3*u+0],c=o[3*u+1],l=o[3*u+2],h=0;h<f;h+=1)a.push(r(c,l));return a},e}(),b=function(){var t=[],r=0,e={getBuffer:function(){return t},getAt:function(r){var e=Math.floor(r/8);return 1==(t[e]>>>7-r%8&1)},put:function(t,r){for(var n=0;n<r;n+=1)e.putBit(1==(t>>>r-n-1&1))},getLengthInBits:function(){return r},putBit:function(e){var n=Math.floor(r/8);t.length<=n&&t.push(0),e&&(t[n]|=128>>>r%8),r+=1}};return e},M=function(t){var r=a,e=t,n={getMode:function(){return r},getLength:function(t){return e.length},write:function(t){for(var r=e,n=0;n+2<r.length;)t.put(o(r.substring(n,n+3)),10),n+=3;n<r.length&&(r.length-n==1?t.put(o(r.substring(n,n+1)),4):r.length-n==2&&t.put(o(r.substring(n,n+2)),7))}},o=function(t){for(var r=0,e=0;e<t.length;e+=1)r=10*r+i(t.charAt(e));return r},i=function(t){if("0"<=t&&t<="9")return t.charCodeAt(0)-"0".charCodeAt(0);throw"illegal char :"+t};return n},x=function(t){var r=u,e=t,n={getMode:function(){return r},getLength:function(t){return e.length},write:function(t){for(var r=e,n=0;n+1<r.length;)t.put(45*o(r.charAt(n))+o(r.charAt(n+1)),11),n+=2;n<r.length&&t.put(o(r.charAt(n)),6)}},o=function(t){if("0"<=t&&t<="9")return t.charCodeAt(0)-"0".charCodeAt(0);if("A"<=t&&t<="Z")return t.charCodeAt(0)-"A".charCodeAt(0)+10;switch(t){case" ":return 36;case"$":return 37;case"%":return 38;case"*":return 39;case"+":return 40;case"-":return 41;case".":return 42;case"/":return 43;case":":return 44;default:throw"illegal char :"+t}};return n},m=function(r){var e=f,n=t.stringToBytes(r),o={getMode:function(){return e},getLength:function(t){return n.length},write:function(t){for(var r=0;r<n.length;r+=1)t.put(n[r],8)}};return o},L=function(r){var e=c,n=t.stringToBytesFuncs.SJIS;if(!n)throw"sjis not supported.";!function(t,r){var e=n("友");if(2!=e.length||38726!=(e[0]<<8|e[1]))throw"sjis not supported."}();var o=n(r),i={getMode:function(){return e},getLength:function(t){return~~(o.length/2)},write:function(t){for(var r=o,e=0;e+1<r.length;){var n=(255&r[e])<<8|255&r[e+1];if(33088<=n&&n<=40956)n-=33088;else{if(!(57408<=n&&n<=60351))throw"illegal char at "+(e+1)+"/"+n;n-=49472}n=192*(n>>>8&255)+(255&n),t.put(n,13),e+=2}if(e<r.length)throw"illegal char at "+(e+1)}};return i},D=function(){var t=[],r={writeByte:function(r){t.push(255&r)},writeShort:function(t){r.writeByte(t),r.writeByte(t>>>8)},writeBytes:function(t,e,n){e=e||0,n=n||t.length;for(var o=0;o<n;o+=1)r.writeByte(t[o+e])},writeString:function(t){for(var e=0;e<t.length;e+=1)r.writeByte(t.charCodeAt(e))},toByteArray:function(){return t},toString:function(){var r="";r+="[";for(var e=0;e<t.length;e+=1)e>0&&(r+=","),r+=t[e];return r+="]"}};return r},S=function(t){var r=t,e=0,n=0,o=0,i={read:function(){for(;o<8;){if(e>=r.length){if(0==o)return-1;throw"unexpected end of file./"+o}var t=r.charAt(e);if(e+=1,"="==t)return o=0,-1;t.match(/^\s$/)||(n=n<<6|a(t.charCodeAt(0)),o+=6)}var i=n>>>o-8&255;return o-=8,i}},a=function(t){if(65<=t&&t<=90)return t-65;if(97<=t&&t<=122)return t-97+26;if(48<=t&&t<=57)return t-48+52;if(43==t)return 62;if(47==t)return 63;throw"c:"+t};return i},I=function(t,r,e){for(var n=function(t,r){var e=t,n=r,o=new Array(t*r),i={setPixel:function(t,r,n){o[r*e+t]=n},write:function(t){t.writeString("GIF87a"),t.writeShort(e),t.writeShort(n),t.writeByte(128),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(255),t.writeByte(255),t.writeByte(255),t.writeString(","),t.writeShort(0),t.writeShort(0),t.writeShort(e),t.writeShort(n),t.writeByte(0);var r=a(2);t.writeByte(2);for(var o=0;r.length-o>255;)t.writeByte(255),t.writeBytes(r,o,255),o+=255;t.writeByte(r.length-o),t.writeBytes(r,o,r.length-o),t.writeByte(0),t.writeString(";")}},a=function(t){for(var r=1<<t,e=1+(1<<t),n=t+1,i=u(),a=0;a<r;a+=1)i.add(String.fromCharCode(a));i.add(String.fromCharCode(r)),i.add(String.fromCharCode(e));var f,c,g,l=D(),h=(f=l,c=0,g=0,{write:function(t,r){if(t>>>r!=0)throw"length over";for(;c+r>=8;)f.writeByte(255&(t<<c|g)),r-=8-c,t>>>=8-c,g=0,c=0;g|=t<<c,c+=r},flush:function(){c>0&&f.writeByte(g)}});h.write(r,n);var s=0,v=String.fromCharCode(o[s]);for(s+=1;s<o.length;){var d=String.fromCharCode(o[s]);s+=1,i.contains(v+d)?v+=d:(h.write(i.indexOf(v),n),i.size()<4095&&(i.size()==1<<n&&(n+=1),i.add(v+d)),v=d)}return h.write(i.indexOf(v),n),h.write(e,n),h.flush(),l.toByteArray()},u=function(){var t={},r=0,e={add:function(n){if(e.contains(n))throw"dup key:"+n;t[n]=r,r+=1},size:function(){return r},indexOf:function(r){return t[r]},contains:function(r){return void 0!==t[r]}};return e};return i}(t,r),o=0;o<r;o+=1)for(var i=0;i<t;i+=1)n.setPixel(i,o,e(i,o));var a=D();n.write(a);for(var u=function(){var t=0,r=0,e=0,n="",o={},i=function(t){n+=String.fromCharCode(a(63&t))},a=function(t){if(t<0);else{if(t<26)return 65+t;if(t<52)return t-26+97;if(t<62)return t-52+48;if(62==t)return 43;if(63==t)return 47}throw"n:"+t};return o.writeByte=function(n){for(t=t<<8|255&n,r+=8,e+=1;r>=6;)i(t>>>r-6),r-=6},o.flush=function(){if(r>0&&(i(t<<6-r),t=0,r=0),e%3!=0)for(var o=3-e%3,a=0;a<o;a+=1)n+="="},o.toString=function(){return n},o}(),f=a.toByteArray(),c=0;c<f.length;c+=1)u.writeByte(f[c]);return u.flush(),"data:image/gif;base64,"+u};return t}();qrcode.stringToBytesFuncs["UTF-8"]=function(t){return function(t){for(var r=[],e=0;e<t.length;e++){var n=t.charCodeAt(e);n<128?r.push(n):n<2048?r.push(192|n>>6,128|63&n):n<55296||n>=57344?r.push(224|n>>12,128|n>>6&63,128|63&n):(e++,n=65536+((1023&n)<<10|1023&t.charCodeAt(e)),r.push(240|n>>18,128|n>>12&63,128|n>>6&63,128|63&n))}return r}(t)},function(t){"function"==typeof define&&define.amd?define([],t):"object"==typeof exports&&(module.exports=t())}((function(){return qrcode}));</script>
+<script>
+/* =========================================================
+   CONFIGURACIÓN
+   Llena estos valores con los outputs del stack (sam deploy):
+   SiteUrl, ApiUrl, LoginDomain y UserPoolClientId.
+   ========================================================= */
+const CONFIG = {
+  API_URL: "https://YOUR_API_ID.execute-api.YOUR_REGION.amazonaws.com", // output ApiUrl
+  ASSETS_URL: "https://example.com",             // output SiteUrl (imágenes en /media/rewards/)
+  COGNITO_DOMAIN: "https://YOUR_PREFIX.auth.YOUR_REGION.amazoncognito.com", // https:// + output LoginDomain
+  CLIENT_ID: "YOUR_USER_POOL_CLIENT_ID",         // output UserPoolClientId
+  REDIRECT_URI: "https://example.com",           // output SiteUrl (sin diagonal final)
+  LOGOUT_URI: "https://example.com",
+  SCOPE: "openid email",
+  GROUP_NAME: "AWS Student Builder Group",       // nombre del grupo que se muestra en la página y en los vales
+  INSTITUTION_NAME: "Nombre de tu institución",
+  INSTITUTIONAL_DOMAIN: "example.edu",           // igual que el parámetro InstitutionalDomain
+  // El idioma del inicio de sesión de Cognito sigue al selector ESPAÑOL / ENGLISH
+  // Nombre de quien expide los vales institucionales
+  LEADER_NAME: "Tu nombre completo",
+};
+
+/* ---------- Utilidades ---------- */
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const TZ = "America/Mexico_City";
+
+/* ---------- Idioma (español / inglés) ----------
+   Se traduce toda la interfaz, incluido el panel del líder. El vale
+   institucional impreso se queda siempre en español (documento oficial). */
+const I18N = {
+  es: {
+    "doc.title": `Recompensas | ${CONFIG.GROUP_NAME}`,
+    "lang.group": "Idioma",
+    brand: "Recompensas",
+    group: CONFIG.GROUP_NAME,
+    login: "Iniciar sesión",
+    "verify.aria": "Verificar vale institucional",
+    "verify.btn": 'Verificar vale<span class="vb-long"> institucional</span>',
+    "verify.short": "Verificar vale",
+    user: "Tu usuario",
+    points: "Tus puntos",
+    logout: "Salir",
+    "logout.sr": "Cerrar sesión",
+    "about.title": "Acerca de esta plataforma",
+    "about.body": `Esta plataforma es un proyecto independiente y sin fines de lucro. No está afiliada, patrocinada ni respaldada de ninguna forma por Amazon Web Services (AWS). Su único objetivo es informar sobre los eventos del grupo ${CONFIG.GROUP_NAME} (${CONFIG.INSTITUTION_NAME}) y motivar a los estudiantes a asistir, otorgándoles puntos que pueden canjear por vales institucionales o artículos promocionales (SWAG) de AWS.`,
+    "about.tm": "AWS y Amazon Web Services son marcas comerciales de Amazon.com, Inc. o sus afiliadas.",
+    "ev.title": "Próximos eventos",
+    "ev.intro": "Asiste y suma los puntos de cada actividad a tu cuenta.",
+    "ev.intro.guest": "Esta es una vista previa de los eventos disponibles. Crea una cuenta para registrar tu asistencia y empezar a acumular puntos.",
+    "ev.empty": "No hay eventos programados por ahora. Activa los avisos por correo para enterarte del siguiente.",
+    "ev.empty.guest": "No hay eventos programados por ahora. Crea una cuenta y activa los avisos por correo para enterarte del siguiente.",
+    "sub.title": "Avisos por correo",
+    "sub.off": "Recibe nuevos eventos y recordatorios",
+    "sub.on": "Recibirás nuevos eventos y recordatorios",
+    "rw.title": "Recompensas",
+    "rw.intro": "Canjéalas con tus puntos. Las de AWS se entregan en persona; las institucionales generan un vale que puedes presentar a tus docentes.",
+    "rw.intro.guest": "Esta es una vista previa de las recompensas que otorga el programa. Para canjearlas, regístrate e inicia sesión en tu cuenta.",
+    "rw.empty": "Todavía no hay recompensas en el catálogo.",
+    "rw.empty.guest": "Todavía no hay recompensas en el catálogo. Mientras tanto, crea tu cuenta y empieza a acumular puntos en los eventos.",
+    "rw.empty.filter": "No hay recompensas de este tipo por ahora. Prueba con otro filtro.",
+    "rw.noStock": "Sin existencias por ahora.",
+    "rw.missing": (n) => `Te faltan ${n} pts`,
+    "rw.zoom": (name) => `Ver imagen completa de ${name}`,
+    "filter.aria": "Filtrar por tipo",
+    "filter.all": "Todas",
+    "type.inst": "Institucional",
+    "stock.out": "Agotado",
+    "stock.left": (n) => `Quedan ${n}`,
+    redeem: "Canjear",
+    "rd.title": "Mis canjes",
+    "rd.sub": "Estado de entrega de tus recompensas AWS y vales institucionales para descargar.",
+    "rd.empty": "Aún no has canjeado recompensas. Cuando tengas los puntos, el botón Canjear aparecerá en cada recompensa.",
+    "rd.view": "Ver vale",
+    "hi.title": "Mi historial",
+    "hi.sub": "Actividades en las que participaste y canjes realizados.",
+    "hi.empty": "Aún no tienes actividades. Asiste a uno de los próximos eventos para ganar tus primeros puntos.",
+    "status.PENDIENTE": "Entrega pendiente",
+    "status.ENTREGADO": "Entregado",
+    "status.VIGENTE": "Vale vigente",
+    "status.APLICADO": "Vale aplicado",
+    "status.REEMBOLSADO": "Reembolsado",
+    "sg.title": "Sugerencias",
+    "sg.sub": "Ideas para talleres, eventos o recompensas. Puedes enviarla sin tu nombre.",
+    "sg.label": "Tu sugerencia",
+    "sg.ph": "Ej.: Me gustaría un taller de Amazon Bedrock donde construyamos paso a paso un chatbot que responda dudas sobre los reglamentos de la escuela. Si se puede, que sea los viernes por la tarde para no chocar con clases.",
+    "sg.anon": "Enviar de forma anónima",
+    "sg.send": "Enviar sugerencia",
+    "sg.ok": "Sugerencia enviada. Gracias.",
+    "sg.unsafe": "La sugerencia no puede contener código HTML ni scripts.",
+    "ms.title": "Contáctate con el AWS Student Group Leader",
+    "ms.sub": "Dudas o propuestas. La respuesta llegará a tu correo institucional.",
+    "ms.subject": "Asunto",
+    "ms.subject.ph": "Ej.: No aparecen mis puntos del Torneo BuilderCards",
+    "ms.text": "Mensaje",
+    "ms.text.ph": "Ej.: Hola, participé en el Torneo BuilderCards del 29 de septiembre y quedé en segundo lugar, pero los puntos no aparecen en mi historial. ¿Podrías revisarlo? Mi número de control es 00000000. Gracias.",
+    "ms.send": "Enviar mensaje",
+    "ms.ok": "Mensaje enviado. Te responderán a tu correo institucional.",
+    "ms.unsafe.subject": "El asunto no puede contener código HTML ni scripts.",
+    "ms.unsafe.text": "El mensaje no puede contener código HTML ni scripts.",
+    sending: "Enviando…",
+    "send.fail": "No se envió. Revisa tu conexión e inténtalo otra vez.",
+    "lock.rd": "Inicia sesión para ver tus canjes y descargar tus vales institucionales.",
+    "lock.hi": "Inicia sesión para ver las actividades en las que has participado y los puntos que has ganado.",
+    "lock.sg": "Inicia sesión para proponer talleres, eventos o recompensas. Puedes enviarlas de forma anónima.",
+    "lock.ms": "Inicia sesión para enviar tus dudas o propuestas al AWS Student Group Leader. Te responderá a tu correo institucional.",
+    footer: `${CONFIG.GROUP_NAME} · ${CONFIG.INSTITUTION_NAME}`,
+    close: "Cerrar",
+    cancel: "Cancelar",
+    ok: "Aceptar",
+    understood: "Entendido",
+    loading: "Cargando…",
+    more: "Cargar más",
+    "err.section": "No se pudo cargar esta sección.",
+    retry: "Reintentar",
+    "err.session": "Tu sesión expiró.",
+    "err.unavailable": "El servicio todavía no está disponible. Intenta más tarde.",
+    "err.format": "La API devolvió un formato inesperado. Verifica que la Lambda desplegada sea la versión más reciente.",
+    "err.token": (s) => `Error ${s} al obtener el token`,
+    "auth.badstate": "La respuesta del inicio de sesión no es válida. Vuelve a intentarlo.",
+    "screen.signing": "Iniciando sesión…",
+    "screen.fail": "No se pudo iniciar sesión",
+    "screen.retry": "Intentar de nuevo",
+    "voucher.title": "Vale institucional",
+    "voucher.pdf": "Descargar PDF",
+    "vc.fail.title": "No se pudo cargar el vale",
+    "vc.fail.msg": "Revisa tu conexión e inténtalo de nuevo.",
+    "rdm.title": (name) => `Canjear ${name}`,
+    "rdm.aws.sub": "Déjanos tus datos de contacto para la entrega.",
+    "rdm.inst.sub": "Recompensa institucional.",
+    "rdm.cost": "Costo",
+    "rdm.after": "Te quedarán",
+    "rdm.name": "Nombre completo",
+    "rdm.name.ph": "Ej.: Juan Pérez López",
+    "rdm.phone": "Teléfono celular (10 dígitos)",
+    "rdm.phone.ph": "Ej.: 5512345678",
+    "rdm.semester": "Semestre",
+    "rdm.choose": "Elige",
+    "rdm.ord": (n) => `${n}.º`,
+    "rdm.group": "Grupo",
+    "rdm.hint": "Solo se usan para coordinar la entrega de tu recompensa.",
+    "rdm.inst.hint": "Se generará un vale con tu correo, la fecha, tu historial de actividades y un folio que tus docentes pueden verificar en esta plataforma.",
+    "rdm.confirm": "Confirmar canje",
+    "rdm.working": "Canjeando…",
+    "rdm.done": "Canje registrado",
+    "rdm.done.msg": ({ phone, name }) => `Te contactaremos al ${phone} para entregarte tu ${name}. Puedes seguir el estado en Mis canjes.`,
+    "rdm.ready": "Listo",
+    "rdm.fail": "No se pudo completar el canje.",
+    "vf.title": "Verificar vale institucional",
+    "vf.teachers": "Esta herramienta está pensada para uso de docentes.",
+    "vf.intro": "Para verificar un vale, introduce el folio (UUID) impreso en el documento. Si la información que aparece aquí no coincide con la del vale, o el folio no se encuentra, es probable que el documento haya sido alterado.",
+    "vf.label": "Folio del vale",
+    "vf.ph": "Ej.: 7cd320b6-68f7-4482-b7e2-f23c1328ddf1",
+    "vf.btn": "Verificar",
+    "vf.working": "Verificando…",
+    "vf.badformat": "El folio no tiene el formato correcto.",
+    "vf.badformat.msg": "Son 32 caracteres y 4 guiones. Ej.: 3f6c2a1e-8b7d-4c9a-9e2f-5a1b7c0d4e21",
+    "vf.notfound": (id) => `No existe ningún vale con el folio ${id}.`,
+    "vf.notfound.msg": `Revisa que el folio esté escrito completo. Si es correcto, el vale no fue expedido por ${CONFIG.GROUP_NAME} y probablemente fue alterado o falsificado.`,
+    "vf.valid": "Vale vigente",
+    "vf.used": "Este vale ya fue usado",
+    "vf.refunded": "Vale reembolsado: no debe aceptarse",
+    "vf.folio": "Folio",
+    "vf.requester": "Solicitante",
+    "vf.reward": "Recompensa",
+    "vf.desc": "Descripción",
+    "vf.cost": "Costo",
+    "vf.points": (n) => `${n} puntos`,
+    "vf.issued": "Expedido",
+    "vf.issuer": "Expide",
+    "vf.acts": "Actividades registradas",
+    "vf.acts.last": (n) => `Últimas ${n} actividades registradas`,
+    "vf.noacts": "Sin actividades",
+    "vf.capped": (n) => `Principalmente se muestran las ${n} actividades más recientes realizadas por el estudiante, pero puede que haya participado en más.`,
+    "vf.note": "Estos datos vienen directamente de la plataforma y no pueden modificarse desde un documento impreso o un PDF.",
+  },
+  en: {
+    "doc.title": `Rewards | ${CONFIG.GROUP_NAME}`,
+    "lang.group": "Language",
+    brand: "Rewards",
+    group: CONFIG.GROUP_NAME,
+    login: "Sign in",
+    "verify.aria": "Verify institutional voucher",
+    "verify.btn": 'Verify<span class="vb-long"> institutional</span> voucher',
+    "verify.short": "Verify voucher",
+    user: "Your account",
+    points: "Your points",
+    logout: "Sign out",
+    "logout.sr": "",
+    "about.title": "About this platform",
+    "about.body": `This platform is an independent, non-profit project. It is not affiliated with, sponsored by or endorsed by Amazon Web Services (AWS) in any way. Its sole purpose is to share information about the events of ${CONFIG.GROUP_NAME} at ${CONFIG.INSTITUTION_NAME} and to motivate students to attend them, awarding points they can redeem for institutional vouchers or AWS promotional items (swag).`,
+    "about.tm": "AWS and Amazon Web Services are trademarks of Amazon.com, Inc. or its affiliates.",
+    "ev.title": "Upcoming events",
+    "ev.intro": "Attend and add each activity's points to your account.",
+    "ev.intro.guest": "This is a preview of the available events. Create an account to record your attendance and start earning points.",
+    "ev.empty": "No events scheduled for now. Turn on email alerts to hear about the next one.",
+    "ev.empty.guest": "No events scheduled for now. Create an account and turn on email alerts to hear about the next one.",
+    "sub.title": "Email alerts",
+    "sub.off": "Get new events and reminders",
+    "sub.on": "You'll get new events and reminders",
+    "rw.title": "Rewards",
+    "rw.intro": "Redeem them with your points. AWS rewards are handed out in person; institutional ones generate a voucher you can show your teachers.",
+    "rw.intro.guest": "This is a preview of the rewards the program offers. To redeem them, sign up and sign in to your account.",
+    "rw.empty": "There are no rewards in the catalog yet.",
+    "rw.empty.guest": "There are no rewards in the catalog yet. Meanwhile, create your account and start earning points at events.",
+    "rw.empty.filter": "No rewards of this type for now. Try another filter.",
+    "rw.noStock": "Out of stock for now.",
+    "rw.missing": (n) => `${n} pts to go`,
+    "rw.zoom": (name) => `View full image of ${name}`,
+    "filter.aria": "Filter by type",
+    "filter.all": "All",
+    "type.inst": "Institutional",
+    "stock.out": "Sold out",
+    "stock.left": (n) => `${n} left`,
+    redeem: "Redeem",
+    "rd.title": "My redemptions",
+    "rd.sub": "Delivery status of your AWS rewards and institutional vouchers to download.",
+    "rd.empty": "You haven't redeemed any rewards yet. Once you have enough points, a Redeem button will appear on each reward.",
+    "rd.view": "View voucher",
+    "hi.title": "My history",
+    "hi.sub": "Activities you took part in and redemptions you made.",
+    "hi.empty": "You don't have any activities yet. Attend one of the upcoming events to earn your first points.",
+    "status.PENDIENTE": "Delivery pending",
+    "status.ENTREGADO": "Delivered",
+    "status.VIGENTE": "Valid voucher",
+    "status.APLICADO": "Voucher used",
+    "status.REEMBOLSADO": "Refunded",
+    "sg.title": "Suggestions",
+    "sg.sub": "Ideas for workshops, events or rewards. You can send it without your name.",
+    "sg.label": "Your suggestion",
+    "sg.ph": "E.g.: I'd like an Amazon Bedrock workshop where we build, step by step, a chatbot that answers questions about the school's regulations. If possible, on Friday afternoons so it doesn't clash with classes.",
+    "sg.anon": "Send anonymously",
+    "sg.send": "Send suggestion",
+    "sg.ok": "Suggestion sent. Thank you.",
+    "sg.unsafe": "The suggestion can't contain HTML code or scripts.",
+    "ms.title": "Contact the AWS Student Group Leader",
+    "ms.sub": "Questions or proposals. The reply will arrive at your institutional email.",
+    "ms.subject": "Subject",
+    "ms.subject.ph": "E.g.: My points from the BuilderCards Tournament don't show up",
+    "ms.text": "Message",
+    "ms.text.ph": "E.g.: Hi, I took part in the BuilderCards Tournament on September 29 and came in second, but the points don't show up in my history. Could you check? My student ID is 00000000. Thanks.",
+    "ms.send": "Send message",
+    "ms.ok": "Message sent. You'll get a reply at your institutional email.",
+    "ms.unsafe.subject": "The subject can't contain HTML code or scripts.",
+    "ms.unsafe.text": "The message can't contain HTML code or scripts.",
+    sending: "Sending…",
+    "send.fail": "Not sent. Check your connection and try again.",
+    "lock.rd": "Sign in to see your redemptions and download your institutional vouchers.",
+    "lock.hi": "Sign in to see the activities you've taken part in and the points you've earned.",
+    "lock.sg": "Sign in to suggest workshops, events or rewards. You can send them anonymously.",
+    "lock.ms": "Sign in to send your questions or proposals to the AWS Student Group Leader. They'll reply to your institutional email.",
+    footer: `${CONFIG.GROUP_NAME} · ${CONFIG.INSTITUTION_NAME}`,
+    close: "Close",
+    cancel: "Cancel",
+    ok: "OK",
+    understood: "Got it",
+    loading: "Loading…",
+    more: "Load more",
+    "err.section": "This section couldn't be loaded.",
+    retry: "Retry",
+    "err.session": "Your session expired.",
+    "err.unavailable": "The service isn't available yet. Please try again later.",
+    "err.format": "The API returned an unexpected format. Check that the deployed Lambda is the latest version.",
+    "err.token": (s) => `Error ${s} while getting the token`,
+    "auth.badstate": "The sign-in response isn't valid. Please try again.",
+    "screen.signing": "Signing in…",
+    "screen.fail": "Couldn't sign in",
+    "screen.retry": "Try again",
+    "voucher.title": "Institutional voucher",
+    "voucher.pdf": "Download PDF",
+    "vc.fail.title": "Couldn't load the voucher",
+    "vc.fail.msg": "Check your connection and try again.",
+    "rdm.title": (name) => `Redeem ${name}`,
+    "rdm.aws.sub": "Leave your contact details for delivery.",
+    "rdm.inst.sub": "Institutional reward.",
+    "rdm.cost": "Cost",
+    "rdm.after": "You'll have left",
+    "rdm.name": "Full name",
+    "rdm.name.ph": "E.g.: Juan Pérez López",
+    "rdm.phone": "Mobile phone (10 digits)",
+    "rdm.phone.ph": "E.g.: 5512345678",
+    "rdm.semester": "Semester",
+    "rdm.choose": "Choose",
+    "rdm.ord": (n) => `${n}${["st", "nd", "rd"][n - 1] || "th"}`,
+    "rdm.group": "Group",
+    "rdm.hint": "Only used to arrange the delivery of your reward.",
+    "rdm.inst.hint": "A voucher will be generated with your email, the date, your activity history and a folio number your teachers can verify on this platform. The voucher is issued in Spanish.",
+    "rdm.confirm": "Confirm redemption",
+    "rdm.working": "Redeeming…",
+    "rdm.done": "Redemption recorded",
+    "rdm.done.msg": ({ phone, name }) => `We'll contact you at ${phone} to deliver your ${name}. You can track its status in My redemptions.`,
+    "rdm.ready": "Done",
+    "rdm.fail": "The redemption couldn't be completed.",
+    "vf.title": "Verify institutional voucher",
+    "vf.teachers": "This tool is intended for teachers.",
+    "vf.intro": "To verify a voucher, enter the folio (UUID) printed on the document. If the information shown here doesn't match the voucher, or the folio isn't found, the document has probably been altered.",
+    "vf.label": "Voucher folio",
+    "vf.ph": "E.g.: 7cd320b6-68f7-4482-b7e2-f23c1328ddf1",
+    "vf.btn": "Verify",
+    "vf.working": "Verifying…",
+    "vf.badformat": "The folio isn't in the right format.",
+    "vf.badformat.msg": "It has 32 characters and 4 hyphens. E.g.: 3f6c2a1e-8b7d-4c9a-9e2f-5a1b7c0d4e21",
+    "vf.notfound": (id) => `There is no voucher with folio ${id}.`,
+    "vf.notfound.msg": `Check that the folio is written in full. If it's correct, the voucher wasn't issued by ${CONFIG.GROUP_NAME} and has probably been altered or forged.`,
+    "vf.valid": "Valid voucher",
+    "vf.used": "This voucher has already been used",
+    "vf.refunded": "Refunded voucher: do not accept it",
+    "vf.folio": "Folio",
+    "vf.requester": "Requested by",
+    "vf.reward": "Reward",
+    "vf.desc": "Description",
+    "vf.cost": "Cost",
+    "vf.points": (n) => `${n} points`,
+    "vf.issued": "Issued",
+    "vf.issuer": "Issued by",
+    "vf.acts": "Recorded activities",
+    "vf.acts.last": (n) => `Last ${n} recorded activities`,
+    "vf.noacts": "No activities",
+    "vf.capped": (n) => `Mainly the student's ${n} most recent activities are shown, but they may have taken part in more.`,
+    "vf.note": "This data comes directly from the platform and can't be altered from a printed document or a PDF.",
+  },
+};
+
+// Panel del AWS Student Group Leader
+Object.assign(I18N.es, {
+  "a.doc.title": `Panel del AWS Student Group Leader | ${CONFIG.GROUP_NAME}`,
+  "a.role": "Administrador",
+  "a.title": "Panel del AWS Student Group Leader",
+  "a.sub": "Administra eventos, asistencia, recompensas y solicitudes de canje del grupo.",
+  "a.tabs": "Secciones del panel",
+  "a.tab.canjes": "Solicitudes de canje",
+  "a.tab.eventos": "Eventos y asistencia",
+  "a.tab.sugerencias": "Buzón de sugerencias",
+  "a.tab.mensajes": "Mensajes",
+  "a.rdm.sub": "Entrega las recompensas AWS y marca como aplicados los vales cuando un docente te avise. Los canjes no se cancelan: si hace falta (por ejemplo, si lo solicita un docente) se reembolsan, se devuelven los puntos al alumno y la unidad regresa al stock.",
+  "a.f.pending": "Por entregar", "a.f.delivered": "Entregados", "a.f.valid": "Vigentes", "a.f.used": "Aplicados",
+  "a.f.both": "Ambos", "a.f.refunded": "Reembolsados",
+  "a.ev.create": "Crear evento",
+  "a.ev.create.sub": "Aparecerá en Próximos eventos para todos.",
+  "a.f.title": "Título", "a.f.datetime": "Fecha y hora", "a.f.points": "Puntos", "a.f.location": "Lugar",
+  "a.f.desc.opt": "Descripción (opcional)", "a.f.event": "Evento", "a.f.students": "Alumnos",
+  "a.f.name": "Nombre", "a.f.type": "Tipo", "a.f.image.opt": "Opcionalmente una imagen", "a.f.image": "Imagen",
+  "a.f.active": "Activos", "a.f.deleted": "Eliminados", "a.f.visible": "Visibles", "a.f.hidden": "Ocultas",
+  "a.f.named": "Con nombre", "a.f.anon": "Anónimas",
+  "a.ph.evtitle": "Ej.: Taller: tu primera API con Lambda y API Gateway",
+  "a.ph.evpoints": "Ej.: 80",
+  "a.ph.location": "Ej.: Laboratorio de Cómputo 2",
+  "a.ph.evdesc": "Ej.: Trae tu laptop con una cuenta de AWS creada.",
+  "a.ph.emails": `Ej.:\nl00000001\nl00000002@${CONFIG.INSTITUTIONAL_DOMAIN}\nl00000003`,
+  "a.ph.rwname": "Ej.: Camisa de AWS",
+  "a.ph.rwdesc": "Ej.: Color morado, cualquier talla. Se entrega en la siguiente reunión del grupo.",
+  "a.ph.rwpoints": "Ej.: 800",
+  "a.ph.rwstock": "Ej.: 10",
+  "a.att.title": "Registrar asistencia",
+  "a.att.sub": "Suma los puntos del evento a cada alumno.",
+  "a.att.loading": "Cargando eventos…",
+  "a.att.hint": `Si escribes solo el usuario (l00000001) se completa con @${CONFIG.INSTITUTIONAL_DOMAIN}. Si un alumno ya estaba registrado, no se le suman puntos dos veces. Solo se registra a alumnos con cuenta en la plataforma.`,
+  "a.att.choose": "Elige un evento",
+  "a.att.loadfail": "No se pudieron cargar los eventos",
+  "a.att.loadingList": "Cargando asistentes…",
+  "a.att.registered": (n) => `Registrados (${n})`,
+  "a.att.none": "Nadie registrado en este evento todavía.",
+  "a.att.noValid": "No hay correos válidos de alumnos en la lista.",
+  "a.att.max": "Registra máximo 200 alumnos por vez.",
+  "a.att.added": (n) => `${n} ${n === 1 ? "registrado" : "registrados"}.`,
+  "a.att.skipped": (n) => `${n} ${n === 1 ? "ya estaba registrado" : "ya estaban registrados"}.`,
+  "a.att.noAccount": (n) => `${n} ${n === 1 ? "no tiene cuenta" : "no tienen cuenta"} en la plataforma.`,
+  "a.att.bad": (n) => `${n} ${n === 1 ? "correo inválido" : "correos inválidos"}.`,
+  "a.att.left": "Los que no se registraron quedaron en la lista.",
+  "a.ev.list": "Eventos",
+  "a.newest": "Del más reciente al más antiguo.",
+  "a.ev.show": "Mostrar eventos",
+  "a.ev.empty": "Aún no hay eventos. Crea el primero.",
+  "a.ev.emptyDeleted": "No hay eventos eliminados.",
+  "a.th.date": "Fecha", "a.th.event": "Evento", "a.th.place": "Lugar", "a.th.points": "Puntos", "a.th.status": "Estado",
+  "a.th.reward": "Recompensa", "a.th.visible": "Visible",
+  "a.chip.deleted": "Eliminado", "a.chip.active": "Activo",
+  "a.btn.delete": "Eliminar", "a.btn.edit": "Editar", "a.btn.editRestore": "Editar o restaurar", "a.btn.save": "Guardar",
+  "a.ev.edit": "Editar evento",
+  "a.ev.edit.sub": "La asistencia ya registrada conserva el título y los puntos con los que se registró.",
+  "a.ev.activeNow": "Evento actualmente activo",
+  "a.saveChanges": "Guardar cambios",
+  "a.saving": "Guardando…",
+  "a.saveFail": "No se pudo guardar.",
+  "a.ev.del.title": "Eliminar evento",
+  "a.ev.del.msg": (title) => `¿Eliminar "${title}"? Dejará de mostrarse en Próximos eventos. La asistencia y los puntos ya registrados se conservan.`,
+  "a.ev.created": "Evento creado.",
+  "a.rdm.empty": "No hay canjes en este estado.",
+  "a.rdm.markDelivered": "Marcar entregado", "a.rdm.markUsed": "Marcar aplicado", "a.rdm.refund": "Reembolsar",
+  "a.rdm.student": "Alumno", "a.rdm.name": "Nombre", "a.rdm.phone": "Celular", "a.rdm.semester": "Semestre",
+  "a.rdm.semGroup": ({ sem, group }) => `${sem}.º, grupo ${group}`,
+  "a.rdm.date": "Fecha", "a.rdm.refundedAt": "Reembolsado", "a.rdm.returned": "Devuelto",
+  "a.rdm.returnedVal": (p) => `+${p} pts y 1 unidad al stock`,
+  "a.rdm.refund.title": "Reembolsar canje",
+  "a.rdm.refund.msg": ({ points, email, name }) => `Se devolverán ${points} puntos a ${email} y la unidad de "${name}" regresará al stock.`,
+  "a.rdm.refund.inst": " El vale dejará de ser válido.",
+  "a.back": "Volver",
+  "a.rw.new": "Nueva recompensa",
+  "a.rw.create": "Crear recompensa",
+  "a.rw.created": "Recompensa creada.",
+  "a.rw.catalog": "Catálogo",
+  "a.rw.catalog.sub": "De la más reciente a la más antigua. Ocultar no borra la recompensa.",
+  "a.rw.show": "Mostrar recompensas",
+  "a.rw.empty": "No hay recompensas visibles.",
+  "a.rw.emptyHidden": "No hay recompensas ocultas.",
+  "a.rw.stockOf": (name) => `Stock de ${name}`,
+  "a.rw.visibleAria": "Visible en el catálogo",
+  "a.rw.imageOf": (name) => `Ver imagen de ${name}`,
+  "a.rw.badStock": "Stock inválido",
+  "a.rw.saved": "Guardado",
+  "a.rw.edit": "Editar recompensa",
+  "a.rw.edit.sub": "Los canjes y vales ya emitidos conservan los datos con los que se hicieron.",
+  "a.rw.current": "Imagen actual",
+  "a.rw.newImg": "Nueva imagen",
+  "a.rw.change": "Cambiar imagen",
+  "a.rw.replace": "Elige un archivo para reemplazarla.",
+  "a.rw.noImg": "Sin imagen. Puedes agregar una.",
+  "a.rw.maxImg": "PNG, JPG o WebP de máximo 5 MB.",
+  "a.rw.removeImg": "Quitar la imagen",
+  "a.img.hint": "PNG, JPG o WebP de máximo 5 MB. Se muestra completa; se ve mejor en formato 4:3.",
+  "a.img.type": "La imagen debe ser PNG, JPG o WebP.",
+  "a.img.size": "La imagen pesa más de 5 MB.",
+  "a.img.upload": "No se pudo subir la imagen. Debe ser PNG, JPG o WebP de máximo 5 MB.",
+  "a.sg.sub": "Ideas que envían los alumnos para talleres, eventos o recompensas. Las anónimas no guardan el correo.",
+  "a.sg.filter": "Filtrar sugerencias",
+  "a.sg.emptyFilter": "No hay sugerencias con este filtro.",
+  "a.sg.empty": "Aún no hay sugerencias.",
+  "a.sg.count": ({ n, more }) => `${n} sugerencia${n === 1 ? "" : "s"}${more ? " cargadas (hay más)" : ""}`,
+  "a.sg.anonChip": "Anónima",
+  "a.ms.sub": "Enviados desde Contáctate con el AWS Student Group Leader. Responde directo al correo del alumno.",
+  "a.ms.empty": "Aún no hay mensajes.",
+  "a.ms.reply": "Responder por correo",
+});
+Object.assign(I18N.en, {
+  "a.doc.title": `AWS Student Group Leader dashboard | ${CONFIG.GROUP_NAME}`,
+  "a.role": "Administrator",
+  "a.title": "AWS Student Group Leader dashboard",
+  "a.sub": "Manage the group's events, attendance, rewards and redemption requests.",
+  "a.tabs": "Dashboard sections",
+  "a.tab.canjes": "Redemption requests",
+  "a.tab.eventos": "Events and attendance",
+  "a.tab.sugerencias": "Suggestion box",
+  "a.tab.mensajes": "Messages",
+  "a.rdm.sub": "Hand out AWS rewards and mark vouchers as used when a teacher lets you know. Redemptions aren't canceled: when needed (for example, if a teacher asks) they're refunded, the points go back to the student and the unit returns to stock.",
+  "a.f.pending": "To deliver", "a.f.delivered": "Delivered", "a.f.valid": "Valid", "a.f.used": "Used",
+  "a.f.both": "Both", "a.f.refunded": "Refunded",
+  "a.ev.create": "Create event",
+  "a.ev.create.sub": "It will show up in Upcoming events for everyone.",
+  "a.f.title": "Title", "a.f.datetime": "Date and time", "a.f.points": "Points", "a.f.location": "Location",
+  "a.f.desc.opt": "Description (optional)", "a.f.event": "Event", "a.f.students": "Students",
+  "a.f.name": "Name", "a.f.type": "Type", "a.f.image.opt": "Image (optional)", "a.f.image": "Image",
+  "a.f.active": "Active", "a.f.deleted": "Deleted", "a.f.visible": "Visible", "a.f.hidden": "Hidden",
+  "a.f.named": "With name", "a.f.anon": "Anonymous",
+  "a.ph.evtitle": "E.g.: Workshop: your first API with Lambda and API Gateway",
+  "a.ph.evpoints": "E.g.: 80",
+  "a.ph.location": "E.g.: Computer Lab 2",
+  "a.ph.evdesc": "E.g.: Bring your laptop with an AWS account already created.",
+  "a.ph.emails": `E.g.:\nl00000001\nl00000002@${CONFIG.INSTITUTIONAL_DOMAIN}\nl00000003`,
+  "a.ph.rwname": "E.g.: AWS T-shirt",
+  "a.ph.rwdesc": "E.g.: Purple, any size. Handed out at the next group meeting.",
+  "a.ph.rwpoints": "E.g.: 800",
+  "a.ph.rwstock": "E.g.: 10",
+  "a.att.title": "Record attendance",
+  "a.att.sub": "Adds the event's points to each student.",
+  "a.att.loading": "Loading events…",
+  "a.att.hint": `If you type only the username (l00000001), @${CONFIG.INSTITUTIONAL_DOMAIN} is added. If a student was already recorded, points aren't added twice. Only students with an account on the platform are recorded.`,
+  "a.att.choose": "Choose an event",
+  "a.att.loadfail": "Couldn't load the events",
+  "a.att.loadingList": "Loading attendees…",
+  "a.att.registered": (n) => `Recorded (${n})`,
+  "a.att.none": "No one recorded for this event yet.",
+  "a.att.noValid": "There are no valid student emails in the list.",
+  "a.att.max": "Record at most 200 students at a time.",
+  "a.att.added": (n) => `${n} recorded.`,
+  "a.att.skipped": (n) => `${n} already recorded.`,
+  "a.att.noAccount": (n) => `${n} ${n === 1 ? "has" : "have"} no account on the platform.`,
+  "a.att.bad": (n) => `${n} invalid ${n === 1 ? "email" : "emails"}.`,
+  "a.att.left": "The ones that weren't recorded were left in the list.",
+  "a.ev.list": "Events",
+  "a.newest": "From newest to oldest.",
+  "a.ev.show": "Show events",
+  "a.ev.empty": "No events yet. Create the first one.",
+  "a.ev.emptyDeleted": "No deleted events.",
+  "a.th.date": "Date", "a.th.event": "Event", "a.th.place": "Location", "a.th.points": "Points", "a.th.status": "Status",
+  "a.th.reward": "Reward", "a.th.visible": "Visible",
+  "a.chip.deleted": "Deleted", "a.chip.active": "Active",
+  "a.btn.delete": "Delete", "a.btn.edit": "Edit", "a.btn.editRestore": "Edit or restore", "a.btn.save": "Save",
+  "a.ev.edit": "Edit event",
+  "a.ev.edit.sub": "Attendance already recorded keeps the title and points it was recorded with.",
+  "a.ev.activeNow": "Event currently active",
+  "a.saveChanges": "Save changes",
+  "a.saving": "Saving…",
+  "a.saveFail": "Couldn't save.",
+  "a.ev.del.title": "Delete event",
+  "a.ev.del.msg": (title) => `Delete "${title}"? It will no longer show up in Upcoming events. Attendance and points already recorded are kept.`,
+  "a.ev.created": "Event created.",
+  "a.rdm.empty": "No redemptions with this status.",
+  "a.rdm.markDelivered": "Mark delivered", "a.rdm.markUsed": "Mark used", "a.rdm.refund": "Refund",
+  "a.rdm.student": "Student", "a.rdm.name": "Name", "a.rdm.phone": "Mobile", "a.rdm.semester": "Semester",
+  "a.rdm.semGroup": ({ sem, group }) => `Semester ${sem}, group ${group}`,
+  "a.rdm.date": "Date", "a.rdm.refundedAt": "Refunded", "a.rdm.returned": "Returned",
+  "a.rdm.returnedVal": (p) => `+${p} pts and 1 unit to stock`,
+  "a.rdm.refund.title": "Refund redemption",
+  "a.rdm.refund.msg": ({ points, email, name }) => `${points} points will be returned to ${email} and the "${name}" unit will go back to stock.`,
+  "a.rdm.refund.inst": " The voucher will no longer be valid.",
+  "a.back": "Back",
+  "a.rw.new": "New reward",
+  "a.rw.create": "Create reward",
+  "a.rw.created": "Reward created.",
+  "a.rw.catalog": "Catalog",
+  "a.rw.catalog.sub": "From newest to oldest. Hiding doesn't delete the reward.",
+  "a.rw.show": "Show rewards",
+  "a.rw.empty": "No visible rewards.",
+  "a.rw.emptyHidden": "No hidden rewards.",
+  "a.rw.stockOf": (name) => `Stock of ${name}`,
+  "a.rw.visibleAria": "Visible in the catalog",
+  "a.rw.imageOf": (name) => `View image of ${name}`,
+  "a.rw.badStock": "Invalid stock",
+  "a.rw.saved": "Saved",
+  "a.rw.edit": "Edit reward",
+  "a.rw.edit.sub": "Redemptions and vouchers already issued keep the data they were made with.",
+  "a.rw.current": "Current image",
+  "a.rw.newImg": "New image",
+  "a.rw.change": "Change image",
+  "a.rw.replace": "Choose a file to replace it.",
+  "a.rw.noImg": "No image. You can add one.",
+  "a.rw.maxImg": "PNG, JPG or WebP, up to 5 MB.",
+  "a.rw.removeImg": "Remove the image",
+  "a.img.hint": "PNG, JPG or WebP, up to 5 MB. Shown in full; looks best in 4:3 format.",
+  "a.img.type": "The image must be PNG, JPG or WebP.",
+  "a.img.size": "The image is larger than 5 MB.",
+  "a.img.upload": "Couldn't upload the image. It must be PNG, JPG or WebP, up to 5 MB.",
+  "a.sg.sub": "Ideas students send for workshops, events or rewards. Anonymous ones don't store the email.",
+  "a.sg.filter": "Filter suggestions",
+  "a.sg.emptyFilter": "No suggestions with this filter.",
+  "a.sg.empty": "No suggestions yet.",
+  "a.sg.count": ({ n, more }) => `${n} suggestion${n === 1 ? "" : "s"}${more ? " loaded (there are more)" : ""}`,
+  "a.sg.anonChip": "Anonymous",
+  "a.ms.sub": "Sent from Contact the AWS Student Group Leader. Reply directly to the student's email.",
+  "a.ms.empty": "No messages yet.",
+  "a.ms.reply": "Reply by email",
+});
+
+const LANG_KEY = "lang";
+let LANG = (() => {
+  try { const v = localStorage.getItem(LANG_KEY); if (v === "es" || v === "en") return v; } catch {}
+  return "es";
+})();
+// t("clave") o t("clave", valor) para textos con datos (plurales, nombres, cantidades)
+const t = (key, arg) => {
+  const v = I18N[LANG][key] ?? I18N.es[key] ?? key;
+  return typeof v === "function" ? v(arg) : v;
+};
+
+// Formatos de fecha y número según el idioma (se recrean al cambiar de idioma)
+let fmtNum, fmtDay, fmtMonth, fmtWhen, fmtDate, fmtDateTime;
+function makeFormatters() {
+  const loc = LANG === "en" ? "en-US" : "es-MX";
+  fmtNum = new Intl.NumberFormat(loc);
+  fmtDay = new Intl.DateTimeFormat(loc, { day: "numeric", timeZone: TZ });
+  fmtMonth = new Intl.DateTimeFormat(loc, { month: "short", timeZone: TZ });
+  fmtWhen = new Intl.DateTimeFormat(loc, { weekday: "long", hour: "2-digit", minute: "2-digit", timeZone: TZ });
+  fmtDate = new Intl.DateTimeFormat(loc, { day: "numeric", month: "short", year: "numeric", timeZone: TZ });
+  fmtDateTime = new Intl.DateTimeFormat(loc, { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: TZ });
+}
+makeFormatters();
+const pts = (n) => fmtNum.format(n);
+
+// El vale institucional es un documento oficial: siempre en español
+const fmtNumEs = new Intl.NumberFormat("es-MX");
+const fmtDateEs = new Intl.DateTimeFormat("es-MX", { day: "numeric", month: "short", year: "numeric", timeZone: TZ });
+const fmtDateTimeEs = new Intl.DateTimeFormat("es-MX", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: TZ });
+const ptsEs = (n) => fmtNumEs.format(n);
+
+// Textos fijos del HTML marcados con data-i18n, data-i18n-html, data-i18n-ph y data-i18n-aria
+function applyStaticTexts() {
+  document.documentElement.lang = LANG === "en" ? "en" : "es-MX";
+  document.querySelectorAll("[data-i18n]").forEach((el) => (el.textContent = t(el.dataset.i18n)));
+  document.querySelectorAll("[data-i18n-html]").forEach((el) => (el.innerHTML = t(el.dataset.i18nHtml)));
+  document.querySelectorAll("[data-i18n-ph]").forEach((el) => (el.placeholder = t(el.dataset.i18nPh)));
+  document.querySelectorAll("[data-i18n-aria]").forEach((el) => el.setAttribute("aria-label", t(el.dataset.i18nAria)));
+  document.querySelectorAll("[data-lang]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.lang === LANG)));
+}
+
+// imageUrl llega como ruta ("/media/rewards/<uuid>.png"); se sirve desde CloudFront
+const assetUrl = (path) => {
+  if (!path) return "";
+  if (/^https?:\/\//i.test(path)) return path;
+  return `${CONFIG.ASSETS_URL}${path.startsWith("/") ? "" : "/"}${path}`;
+};
+const VOUCHER_ACTIVITIES = 10; // debe coincidir con VOUCHER_ACTIVITIES de la Lambda
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+// Código QR en SVG (se imprime nítido). Si fallara, se muestra la URL como texto
+function qrSvg(url) {
+  try {
+    const qr = qrcode(0, "M");
+    qr.addData(url);
+    qr.make();
+    return qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+  } catch {
+    return `<span class="uuid">${esc(url)}</span>`;
+  }
+}
+
+const verifyUrl = (id) => `${CONFIG.REDIRECT_URI}/?verificar=${id}`;
+
+// Contenido con forma de HTML o script (etiquetas, javascript:, atributos on...=)
+const UNSAFE_TEXT = /<\/?[a-z!?]|javascript\s*:|vbscript\s*:|data\s*:\s*text\/html|\bon[a-z]+\s*=/i;
+
+// Correo del dominio institucional con al menos un número antes de la @ (número de control)
+const DOMAIN_RE = CONFIG.INSTITUTIONAL_DOMAIN.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const INSTITUTIONAL_EMAIL = new RegExp("^(?=[^@]*\\d)[a-z0-9._-]+@" + DOMAIN_RE + "$", "i");
+const isInstitutional = (e) => !!e && INSTITUTIONAL_EMAIL.test(e.trim());
+
+const LOGO = '<svg viewBox="0 0 36 36" aria-hidden="true"><path d="M8 1h7l4.5 12h-7z" fill="#1B396A" opacity="1"/><path d="M28 1h-7l-4.5 12h7z" fill="#16213A" opacity="1"/><circle cx="18" cy="23" r="11" fill="#F29111"/><circle cx="18" cy="23" r="8.25" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.2"/><polygon points="18,17.8 19.23,21.3 22.95,21.39 20,23.65 21.06,27.21 18,25.1 14.94,27.21 16,23.65 13.05,21.39 16.77,21.3" fill="#16213A"/></svg>';
+const ICON_PIN = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-2px"><path d="M20 10c0 5-8 12-8 12s-8-7-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>';
+const ICON_GIFT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg>';
+const ICON_CHECK = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+const ICON_X = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>';
+
+/* ---------- Pantalla completa ---------- */
+function showScreen(title, body, action) {
+  $("#app").hidden = true;
+  $("#screen").hidden = false;
+  $("#screen-title").textContent = title;
+  const b = $("#screen-body");
+  b.hidden = !body;
+  b.textContent = body || "";
+  const btn = $("#screen-action");
+  btn.hidden = !action;
+  if (action) { btn.textContent = action.label; btn.onclick = action.onClick; }
+}
+
+/* ---------- Auth: Cognito authorization code + PKCE ---------- */
+const auth = (() => {
+  const store = sessionStorage;
+  const b64url = (bytes) => btoa(String.fromCharCode(...bytes)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  const random = (n = 64) => { const a = new Uint8Array(n); crypto.getRandomValues(a); return b64url(a); };
+  const sha256 = async (s) => b64url(new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s))));
+
+  function decodeJwt(token) {
+    const p = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+    const json = decodeURIComponent(atob(p).split("").map((c) => "%" + c.charCodeAt(0).toString(16).padStart(2, "0")).join(""));
+    return JSON.parse(json);
+  }
+
+  async function login() {
+    const verifier = random();
+    const state = random(24);
+    store.setItem("pkce_verifier", verifier);
+    store.setItem("pkce_state", state);
+    const q = new URLSearchParams({
+      lang: LANG, // idioma del inicio de sesión administrado de Cognito (es / en)
+      client_id: CONFIG.CLIENT_ID, response_type: "code", scope: CONFIG.SCOPE,
+      redirect_uri: CONFIG.REDIRECT_URI, state,
+      code_challenge: await sha256(verifier), code_challenge_method: "S256",
+    });
+    // Directo a /login: al pasar por /oauth2/authorize, Cognito redirige a /login
+    // sin el parámetro lang y la página queda en inglés.
+    location.assign(`${CONFIG.COGNITO_DOMAIN}/login?${q}`);
+  }
+
+  async function tokenRequest(params) {
+    const r = await fetch(`${CONFIG.COGNITO_DOMAIN}/oauth2/token`, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ client_id: CONFIG.CLIENT_ID, ...params }),
+    });
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(data.error_description || data.error || t("err.token", r.status));
+    return data;
+  }
+
+  const load = () => JSON.parse(store.getItem("tokens") || "null");
+  function save(t) {
+    const prev = load();
+    const tokens = { id_token: t.id_token, refresh_token: t.refresh_token || prev?.refresh_token, expires_at: Date.now() + t.expires_in * 1000 };
+    store.setItem("tokens", JSON.stringify(tokens));
+    return tokens;
+  }
+
+  async function handleCallback() {
+    const p = new URLSearchParams(location.search);
+    if (p.get("error")) {
+      history.replaceState(null, "", location.pathname);
+      throw new Error(p.get("error_description") || p.get("error"));
+    }
+    const code = p.get("code");
+    if (!code) return;
+    const expected = store.getItem("pkce_state");
+    const verifier = store.getItem("pkce_verifier");
+    history.replaceState(null, "", location.pathname);
+    if (!expected || p.get("state") !== expected) throw new Error(t("auth.badstate"));
+    save(await tokenRequest({ grant_type: "authorization_code", code, redirect_uri: CONFIG.REDIRECT_URI, code_verifier: verifier }));
+    store.removeItem("pkce_state");
+    store.removeItem("pkce_verifier");
+  }
+
+  async function getIdToken() {
+    let t = load();
+    if (!t) return null;
+    if (Date.now() > t.expires_at - 60_000) {
+      if (!t.refresh_token) return null;
+      try { t = save(await tokenRequest({ grant_type: "refresh_token", refresh_token: t.refresh_token })); }
+      catch { store.removeItem("tokens"); return null; }
+    }
+    return t.id_token;
+  }
+
+  function logout() {
+    store.removeItem("tokens");
+    const q = new URLSearchParams({ client_id: CONFIG.CLIENT_ID, logout_uri: CONFIG.LOGOUT_URI });
+    location.assign(`${CONFIG.COGNITO_DOMAIN}/logout?${q}`);
+  }
+
+  const clear = () => store.removeItem("tokens");
+  return { login, handleCallback, getIdToken, logout, decodeJwt, clear };
+})();
+
+/* ---------- API real (API Gateway REST) ---------- */
+// HTTP API con autorizador JWT: el ID token va como "Bearer <token>"
+const httpApi = (() => {
+  async function request(method, path, body, { publicRoute = false } = {}) {
+    // Content-Type solo cuando hay cuerpo: un GET público sin headers extra
+    // no necesita la petición OPTIONS previa de CORS
+    const headers = body === undefined ? {} : { "Content-Type": "application/json" };
+    if (!publicRoute) {
+      const token = await auth.getIdToken();
+      if (!token) { auth.clear(); location.reload(); throw new Error(t("err.session")); }
+      headers.Authorization = `Bearer ${token}`;
+    }
+    const r = await fetch(`${CONFIG.API_URL}${path}`, { method, headers, body: body === undefined ? undefined : JSON.stringify(body) });
+    if (r.status === 401 && !publicRoute) { auth.clear(); location.reload(); throw new Error(t("err.session")); }
+    const isJson = (r.headers.get("content-type") || "").includes("application/json");
+    if (r.status === 404 && publicRoute && isJson) return null;
+    if (!isJson && r.status !== 204) throw new Error(t("err.unavailable"));
+    if (!r.ok) {
+      const data = await r.json().catch(() => ({}));
+      throw new Error(data.message || `Error ${r.status}`);
+    }
+    return r.status === 204 ? undefined : r.json();
+  }
+  return {
+    getProfile: () => request("GET", "/me"),
+    // Paginados: {items, nextCursor}
+    getActivities: (cursor) => request("GET", `/me/activities?limit=20${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""}`),
+    getRedemptions: (cursor) => request("GET", `/me/redemptions?limit=20${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""}`),
+    getEvents: () => request("GET", "/events", undefined, { publicRoute: true }),
+    getRewards: () => request("GET", "/rewards", undefined, { publicRoute: true }),
+    // Rutas del líder: el backend debe validar que el token tenga el grupo "administrador"
+    admin: {
+      redemptions: (status, cursor) => request("GET", `/admin/redemptions?status=${encodeURIComponent(status)}&limit=20${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""}`),
+      setRedemptionStatus: (r, status) => request("PATCH", `/admin/redemptions/${encodeURIComponent(r.id)}`, { email: r.email, status }),
+      // Paginado: {items, nextCursor}
+      events: (status, cursor) => request("GET", `/admin/events?status=${status}&limit=20${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""}`),
+      createEvent: (ev) => request("POST", "/admin/events", ev),
+      deleteEvent: (id) => request("DELETE", `/admin/events/${encodeURIComponent(id)}`),
+      updateEvent: (id, patch) => request("PATCH", `/admin/events/${encodeURIComponent(id)}`, patch),
+      attendance: (id) => request("GET", `/admin/events/${encodeURIComponent(id)}/attendance`),
+      addAttendance: (id, emails) => request("POST", `/admin/events/${encodeURIComponent(id)}/attendance`, { emails }),
+      rewards: (status, cursor) => request("GET", `/admin/rewards?status=${status}&limit=20${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""}`),
+      createReward: (rw) => request("POST", "/admin/rewards", rw),
+      updateReward: (id, patch) => request("PATCH", `/admin/rewards/${encodeURIComponent(id)}`, patch),
+      uploadUrl: (contentType, filename, size) => request("POST", "/admin/uploads", { contentType, filename, size }),
+      messages: (cursor) => request("GET", `/admin/messages?limit=20${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""}`),
+      suggestions: (cursor) => request("GET", `/admin/suggestions?limit=20${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""}`),
+    },
+    getSubscription: () => request("GET", "/me/subscription"),
+    setSubscription: (subscribed) => request("PUT", "/me/subscription", { subscribed }),
+    redeem: (rewardId, contact, requestId) => request("POST", "/redemptions", { rewardId, contact, requestId }),
+    verifyCoupon: (id) => request("GET", `/coupons/${encodeURIComponent(id)}`, undefined, { publicRoute: true }),
+    sendSuggestion: (input) => request("POST", "/suggestions", input),
+    sendLeaderMessage: (input) => request("POST", "/messages", input),
+  };
+})();
+
+/* ---------- Estado y renderizado ---------- */
+let api;
+const state = {
+  profile: null, subscribed: null, rewards: null, events: null, filter: "TODAS", openDesc: new Set(),
+  guest: false,                       // true sin sesión: los mensajes invitan a crear cuenta
+  redemptions: null, rdmCursor: null, // Mis canjes (paginado)
+  history: [], histCursor: null, historyLoaded: false, // Mi historial (paginado)
+};
+const ICON_CHEVRON = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
+
+const skeleton = (n, h, cls = "grid grid-3") => `<div class="${cls}">${Array.from({ length: n }, () => `<div class="skeleton" style="height:${h}px"></div>`).join("")}</div>`;
+const errorBox = (msg, retry) => `<div class="error"><b>${esc(t("err.section"))}</b><p>${esc(msg)}</p><button class="link" data-retry="${retry}">${esc(t("retry"))}</button></div>`;
+
+function renderProfile() {
+  const p = state.profile;
+  $("#user-points").textContent = p ? pts(p.points) : "…";
+}
+
+// Avisos por correo: el estado lo da GET /me/subscription (Lambda de eventos)
+function renderSubscription() {
+  const on = state.subscribed === true;
+  const sw = $("#sub-switch");
+  sw.disabled = state.subscribed === null;
+  sw.setAttribute("aria-checked", String(on));
+  $("#sub-text").textContent = t(on ? "sub.on" : "sub.off");
+}
+
+function renderEvents(events) {
+  if (!events.length) {
+    $("#events").innerHTML = `<div class="empty">${esc(t(state.guest ? "ev.empty.guest" : "ev.empty"))}</div>`;
+    return;
+  }
+  $("#events").innerHTML = `<ol class="events grid grid-3">${events.map((e) => `
+    <li class="card event">
+      <div class="date"><b class="num">${fmtDay.format(new Date(e.date))}</b><span>${esc(fmtMonth.format(new Date(e.date)).replace(".", ""))}</span></div>
+      <div style="min-width:0">
+        ${e.description
+          ? `<h3><button class="name-btn" data-desc="ev-${esc(e.id)}" aria-expanded="${state.openDesc.has(`ev-${e.id}`)}" aria-controls="desc-ev-${esc(e.id)}">${esc(e.title)}${ICON_CHEVRON}</button></h3>
+             <p class="desc ev-desc" id="desc-ev-${esc(e.id)}"${state.openDesc.has(`ev-${e.id}`) ? "" : " hidden"}>${esc(e.description)}</p>`
+          : `<h3>${esc(e.title)}</h3>`}
+        <p class="when">${esc(fmtWhen.format(new Date(e.date)))}</p>
+        <p>${ICON_PIN} ${esc(e.location)}</p>
+        <span class="chip chip-aws">+${pts(e.points)} pts</span>
+      </div>
+    </li>`).join("")}</ol>`;
+}
+
+function stockLabel(stock) {
+  if (stock <= 0) return `<span class="stock low">${t("stock.out")}</span>`;
+  if (stock <= 3) return `<span class="stock low">${t("stock.left", stock)}</span>`;
+  return `<span class="stock">${t("stock.left", stock)}</span>`;
+}
+
+function renderRewards() {
+  if (!state.rewards) return;
+  const list = state.rewards
+    .filter((r) => state.filter === "TODAS" || r.type === state.filter)
+    .sort((a, b) => a.points - b.points);
+
+  if (!list.length) {
+    $("#rewards").innerHTML = `<div class="empty">${esc(t(state.filter !== "TODAS" ? "rw.empty.filter" : state.guest ? "rw.empty.guest" : "rw.empty"))}</div>`;
+    return;
+  }
+
+  const balance = state.profile?.points;
+  $("#rewards").innerHTML = `<ul class="rewards grid grid-3">${list.map((r) => {
+    const aws = r.type === "AWS";
+    const soldOut = r.stock <= 0;
+    const ph = `<div class="reward-ph ${aws ? "ph-aws" : "ph-tec"}">${ICON_GIFT}</div>`;
+    const img = r.imageUrl
+      ? `<button type="button" class="zoom" data-zoom="${esc(assetUrl(r.imageUrl))}" data-caption="${esc(r.name)}" aria-label="${esc(t("rw.zoom", r.name))}">
+           <img class="reward-img" src="${esc(assetUrl(r.imageUrl))}" alt="" loading="lazy" decoding="async" onerror="this.parentElement.outerHTML=this.dataset.ph" data-ph="${esc(ph)}">
+         </button>`
+      : ph;
+
+    let bottom = "";
+    if (soldOut) {
+      bottom = `<div class="progress"><p>${t("rw.noStock")}</p></div>`;
+    } else if (balance !== undefined) {
+      const missing = r.points - balance;
+      bottom = missing <= 0
+        ? `<div class="progress"><button class="btn redeem" data-redeem="${esc(r.id)}">${t("redeem")}</button></div>`
+        : `<div class="progress"><div class="bar" aria-hidden="true"><div style="width:${Math.min(100, (balance / r.points) * 100)}%"></div></div><p>${t("rw.missing", pts(missing))}</p></div>`;
+    }
+    return `
+      <li class="card reward${soldOut ? " soldout" : ""}">
+        ${img}
+        <div class="reward-body">
+          <div class="reward-top">
+            <span class="chip ${aws ? "chip-aws" : "chip-tec"}">${aws ? "AWS" : t("type.inst")}</span>
+            ${stockLabel(r.stock)}
+          </div>
+          ${r.description
+            ? `<h3><button class="name-btn" data-desc="${esc(r.id)}" aria-expanded="${state.openDesc.has(r.id)}" aria-controls="desc-${esc(r.id)}">${esc(r.name)}${ICON_CHEVRON}</button></h3>
+               <p class="desc" id="desc-${esc(r.id)}"${state.openDesc.has(r.id) ? "" : " hidden"}>${esc(r.description)}</p>`
+            : `<h3>${esc(r.name)}</h3>`}
+          <p class="cost num">${pts(r.points)} <span>pts</span></p>
+          ${bottom}
+        </div>
+      </li>`;
+  }).join("")}</ul>`;
+}
+
+// Etiqueta del estado de un canje según el idioma actual
+const STATUS_CLS = { PENDIENTE: "chip-wait", ENTREGADO: "chip-ok", VIGENTE: "chip-ok", APLICADO: "chip-wait", REEMBOLSADO: "chip-wait" };
+const statusOf = (s) => STATUS_CLS[s] ? [t(`status.${s}`), STATUS_CLS[s]] : [s, "chip-wait"];
+
+function renderRedemptions() {
+  const items = state.redemptions;
+  if (!items) return;
+  $("#redemptions-more").innerHTML = moreButton("my-redemptions", state.rdmCursor);
+  if (!items.length) {
+    $("#redemptions").innerHTML = `<div class="empty">${esc(t("rd.empty"))}</div>`;
+    return;
+  }
+  $("#redemptions").innerHTML = `<ul class="card rows">${items.map((r) => {
+    const [label, cls] = statusOf(r.status);
+    const voucher = r.type === "INSTITUCIONAL" && (r.status === "VIGENTE" || r.status === "APLICADO")
+      ? `<button class="btn-ghost btn-sm" data-voucher="${esc(r.id)}">${t("rd.view")}</button>` : "";
+    return `
+      <li>
+        <div class="t"><p>${esc(r.rewardName)}</p><small>${esc(fmtDate.format(new Date(r.date)))}, ${pts(r.points)} pts</small></div>
+        <div class="side"><span class="chip ${cls}">${label}</span>${voucher}</div>
+      </li>`;
+  }).join("")}</ul>`;
+}
+
+function renderHistory() {
+  const items = state.history;
+  $("#history-more").innerHTML = moreButton("my-history", state.histCursor);
+  if (!items.length) {
+    $("#history").innerHTML = `<div class="empty">${esc(t("hi.empty"))}</div>`;
+    return;
+  }
+  $("#history").innerHTML = `<ul class="card rows">${items.map((a) => `
+    <li>
+      <div class="t"><p>${esc(a.title)}</p><small>${esc(fmtDate.format(new Date(a.date)))}</small></div>
+      <span class="pts num ${a.points >= 0 ? "plus" : "minus"}">${a.points >= 0 ? "+" : "−"}${pts(Math.abs(a.points))}</span>
+    </li>`).join("")}</ul>`;
+}
+
+/* ---------- Carga de datos ---------- */
+const loaders = {
+  async subscription() {
+    try { state.subscribed = (await api.getSubscription()).subscribed === true; }
+    catch (e) { state.subscribed = null; console.error(e); }
+    renderSubscription();
+  },
+  async profile() {
+    try { state.profile = await api.getProfile(); renderProfile(); renderRewards(); }
+    catch (e) { $("#user-points").textContent = "—"; console.error(e); }
+  },
+  async events() {
+    $("#events").innerHTML = skeleton(3, 140);
+    try { state.events = await api.getEvents(); renderEvents(state.events); }
+    catch (e) { $("#events").innerHTML = errorBox(e.message, "events"); }
+  },
+  async rewards() {
+    $("#rewards").innerHTML = skeleton(3, 290);
+    try { state.rewards = await api.getRewards(); renderRewards(); }
+    catch (e) { $("#rewards").innerHTML = errorBox(e.message, "rewards"); }
+  },
+  // append=false: primera página; append=true: "Cargar más"
+  async redemptions(append = false) {
+    if (!append) {
+      if (!state.redemptions) $("#redemptions").innerHTML = skeleton(1, 70, "");
+      $("#redemptions-more").innerHTML = "";
+    }
+    try {
+      const page = asPage(await api.getRedemptions(append ? state.rdmCursor : null));
+      state.redemptions = append ? state.redemptions.concat(page.items) : page.items;
+      state.rdmCursor = page.nextCursor;
+      renderRedemptions();
+    } catch (e) {
+      if (append) { $("#redemptions-more").innerHTML = `<p class="feedback bad">${esc(e.message)}</p>` + moreButton("my-redemptions", state.rdmCursor); return; }
+      $("#redemptions").innerHTML = errorBox(e.message, "redemptions");
+    }
+  },
+  async history(append = false) {
+    if (!append) {
+      $("#history").innerHTML = skeleton(1, 190, "");
+      $("#history-more").innerHTML = "";
+    }
+    try {
+      const page = asPage(await api.getActivities(append ? state.histCursor : null));
+      state.history = append ? state.history.concat(page.items) : page.items;
+      state.histCursor = page.nextCursor;
+      state.historyLoaded = true;
+      renderHistory();
+    } catch (e) {
+      if (append) { $("#history-more").innerHTML = `<p class="feedback bad">${esc(e.message)}</p>` + moreButton("my-history", state.histCursor); return; }
+      $("#history").innerHTML = errorBox(e.message, "history");
+    }
+  },
+};
+
+/* ---------- Canje ---------- */
+function openRedeem(rewardId) {
+  const r = state.rewards.find((x) => x.id === rewardId);
+  if (!r) return;
+  const aws = r.type === "AWS";
+  const after = state.profile.points - r.points;
+  // Un identificador por intento de canje: si se envía dos veces, el servidor cobra solo una
+  const requestId = crypto.randomUUID();
+
+  const contactFields = aws ? `
+    <label class="f" for="rd-name">${t("rdm.name")}</label>
+    <input id="rd-name" class="field" autocomplete="name" maxlength="120" required minlength="5" placeholder="${esc(t("rdm.name.ph"))}" />
+    <label class="f gap" for="rd-phone">${t("rdm.phone")}</label>
+    <input id="rd-phone" class="field" type="tel" inputmode="numeric" autocomplete="tel-national" pattern="[0-9]{10}" maxlength="10" placeholder="${esc(t("rdm.phone.ph"))}" required />
+    <div class="row2 gap">
+      <div>
+        <label class="f" for="rd-semester">${t("rdm.semester")}</label>
+        <select id="rd-semester" class="field" required>
+          <option value="">${t("rdm.choose")}</option>
+          ${Array.from({ length: 8 }, (_, i) => `<option value="${i + 1}">${t("rdm.ord", i + 1)}</option>`).join("")}
+        </select>
+      </div>
+      <div>
+        <span class="f" style="display:block;font-size:.875rem;font-weight:600" id="rd-group-label">${t("rdm.group")}</span>
+        <div class="seg" role="radiogroup" aria-labelledby="rd-group-label">
+          <label><input type="radio" name="rd-group" value="A" required /><span>A</span></label>
+          <label><input type="radio" name="rd-group" value="B" /><span>B</span></label>
+        </div>
+      </div>
+    </div>
+    <p class="hint">${t("rdm.hint")}</p>` : `
+    <p class="hint">${t("rdm.inst.hint")}</p>`;
+
+  $("#redeem-content").innerHTML = `
+    <h2 id="rd-dlg-title">${esc(t("rdm.title", r.name))}</h2>
+    <p>${t(aws ? "rdm.aws.sub" : "rdm.inst.sub")}</p>
+    <div class="summary"><span>${t("rdm.cost")}: <b class="num">${pts(r.points)} pts</b></span><span>${t("rdm.after")}: <b class="num">${pts(after)} pts</b></span></div>
+    <form id="redeem-form" novalidate>
+      ${contactFields}
+      <div class="actions">
+        <p class="feedback" role="alert" style="margin-right:auto"></p>
+        <button type="button" class="btn-ghost" data-close>${t("cancel")}</button>
+        <button type="submit" class="btn">${t("rdm.confirm")}</button>
+      </div>
+    </form>`;
+
+  const dlg = $("#redeem-dialog");
+  const form = $("#redeem-form");
+  const fb = form.querySelector(".feedback");
+  const submit = form.querySelector("[type=submit]");
+  form.querySelector("[data-close]").onclick = () => dlg.close();
+  const phone = form.querySelector("#rd-phone");
+  if (phone) phone.addEventListener("input", () => (phone.value = phone.value.replace(/\D/g, "").slice(0, 10)));
+
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+    const contact = aws ? {
+      fullName: form.querySelector("#rd-name").value.trim(),
+      phone: phone.value,
+      semester: Number(form.querySelector("#rd-semester").value),
+      group: form.querySelector("[name=rd-group]:checked").value,
+    } : undefined;
+
+    submit.disabled = true;
+    submit.textContent = t("rdm.working");
+    fb.textContent = "";
+    try {
+      const res = await api.redeem(r.id, contact, requestId);
+      state.profile = { ...state.profile, points: res.points };
+      r.stock = res.stock ?? r.stock - 1;
+      state.redemptions = [res.redemption, ...(state.redemptions || [])];
+      renderProfile(); renderRewards(); renderRedemptions(); loaders.history();
+
+      if (aws) {
+        $("#redeem-content").innerHTML = `
+          <h2>${t("rdm.done")}</h2>
+          <p>${t("rdm.done.msg", { phone: esc(contact.phone), name: esc(r.name) })}</p>
+          <div class="actions"><button class="btn" data-close>${t("rdm.ready")}</button></div>`;
+        $("#redeem-content [data-close]").onclick = () => dlg.close();
+      } else {
+        dlg.close();
+        openVoucher(res.redemption);
+      }
+    } catch (err) {
+      fb.textContent = err.message || t("rdm.fail");
+      submit.disabled = false;
+      submit.textContent = t("rdm.confirm");
+      loaders.rewards(); // el stock pudo cambiar
+    }
+  };
+
+  dlg.showModal();
+}
+
+/* ---------- Vale institucional ---------- */
+function voucherHtml(c) {
+  const acts = c.activities || [];
+  const total = acts.reduce((s, a) => s + a.points, 0);
+  const capped = acts.length >= VOUCHER_ACTIVITIES;
+  return `
+  <article class="vale">
+    <div class="vale-head">
+      <div class="vale-brand">${LOGO}<div><b>${esc(CONFIG.GROUP_NAME)}</b><span>${esc(CONFIG.INSTITUTION_NAME)}</span></div></div>
+      <div class="vale-title"><h1>Vale institucional</h1></div>
+    </div>
+
+    <div class="vale-reward">
+      <span>Recompensa canjeada</span>
+      <b>${esc(c.rewardName)}</b>
+      ${c.rewardDescription ? `<p>${esc(c.rewardDescription)}</p>` : ""}
+      <em class="num">${ptsEs(c.points)} puntos</em>
+    </div>
+
+    <dl class="vale-facts">
+      <dt>Folio</dt><dd class="uuid">${esc(c.id)}</dd>
+      <dt>Solicitante</dt><dd>${esc(c.email)}</dd>
+      <dt>Fecha de expedición</dt><dd>${esc(fmtDateTimeEs.format(new Date(c.date)))}</dd>
+    </dl>
+
+    <h2>${capped ? `Últimas ${VOUCHER_ACTIVITIES} actividades realizadas por el estudiante` : "Actividades realizadas por el estudiante"}</h2>
+    <table>
+      <thead><tr><th>Fecha</th><th>Actividad</th><th>Puntos</th></tr></thead>
+      <tbody>${acts.map((a) => `<tr><td>${esc(fmtDateEs.format(new Date(a.date)))}</td><td>${esc(a.title)}</td><td>+${ptsEs(a.points)}</td></tr>`).join("") || `<tr><td colspan="3">Sin actividades registradas</td></tr>`}</tbody>
+      <tfoot><tr><td></td><td>${capped ? "Total de las actividades mostradas" : "Total acumulado"}</td><td>${ptsEs(total)}</td></tr></tfoot>
+    </table>
+    ${capped ? `<p class="vale-note">Principalmente se muestran las ${VOUCHER_ACTIVITIES} actividades más recientes realizadas por el estudiante, pero puede que haya participado en más.</p>` : ""}
+
+    <div class="vale-sign">
+      <div class="sign">
+        <small>Expide</small>
+        <b>${esc(c.issuedBy || CONFIG.LEADER_NAME)}</b>
+        <span>AWS Student Builder Group Leader</span>
+      </div>
+      <div class="vale-verify">
+        <div class="vale-qr">${qrSvg(verifyUrl(c.id))}</div>
+        <div>
+          <b>Para docentes:</b> escanea el código con la cámara del celular para verificar este vale en línea, o usa el botón verificar vale institucional de la plataforma con el folio.
+          El vale solo es válido si los datos coinciden con la consulta en línea.
+        </div>
+      </div>
+    </div>
+  </article>`;
+}
+
+let currentVoucher = null;
+function openVoucher(c) {
+  currentVoucher = c;
+  $("#voucher-content").innerHTML = voucherHtml(c);
+  $("#voucher-dialog").showModal();
+}
+
+async function openVoucherById(id) {
+  const r = state.redemptions?.find((x) => x.id === id);
+  if (r?.activities) return openVoucher(r);
+  // Si la lista no trae el detalle, se consulta el folio
+  const c = await api.verifyCoupon(id).catch(() => null);
+  if (c) openVoucher(c);
+  else alertDialog(t("vc.fail.title"), t("vc.fail.msg"));
+}
+
+function printVoucher() {
+  if (!currentVoucher) return;
+  const dlg = $("#voucher-dialog");
+  $("#print-area").innerHTML = voucherHtml(currentVoucher);
+  document.body.classList.add("printing");
+  dlg.close();
+  const prevTitle = document.title;
+  document.title = `Vale ${currentVoucher.id}`; // nombre sugerido del PDF
+  const done = () => {
+    document.body.classList.remove("printing");
+    document.title = prevTitle;
+    dlg.showModal();
+    window.removeEventListener("afterprint", done);
+  };
+  window.addEventListener("afterprint", done);
+  setTimeout(() => window.print(), 50);
+}
+
+/* ---------- Verificación para docentes ---------- */
+function verifyBlock(prefill = "") {
+  return `
+  <div class="verify">
+    <div class="dlg-top">
+      <h2 id="vf-title">${t("vf.title")}</h2>
+      <button class="icon-close" type="button" data-close-verify aria-label="${esc(t("close"))}">${ICON_X}</button>
+    </div>
+    <p class="for-teachers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg> ${t("vf.teachers")}</p>
+    <p class="verify-intro">${t("vf.intro")}</p>
+    <form class="vf-form">
+      <label class="sr-only" for="vf-input">${t("vf.label")}</label>
+      <input id="vf-input" class="field uuid" placeholder="${esc(t("vf.ph"))}" value="${esc(prefill)}" autocomplete="off" spellcheck="false" required />
+      <button class="btn" type="submit">${t("vf.btn")}</button>
+    </form>
+    <div class="result" aria-live="polite"></div>
+  </div>`;
+}
+
+function renderVerifyResult(box, c, id) {
+  if (!c) {
+    box.innerHTML = `<div class="result-head bad">${ICON_X} ${esc(t("vf.notfound", id))}</div>
+      <div class="result-body"><p>${t("vf.notfound.msg")}</p></div>`;
+    return;
+  }
+  const valid = c.status === "VIGENTE";
+  const acts = c.activities || [];
+  box.innerHTML = `
+    <div class="result-head ${valid ? "ok" : "bad"}">${valid ? ICON_CHECK : ICON_X} ${t(valid ? "vf.valid"
+      : c.status === "APLICADO" ? "vf.used"
+      : "vf.refunded")}</div>
+    <div class="result-body">
+      <dl class="facts">
+        <dt>${t("vf.folio")}</dt><dd class="uuid">${esc(c.id)}</dd>
+        <dt>${t("vf.requester")}</dt><dd>${esc(c.email)}</dd>
+        <dt>${t("vf.reward")}</dt><dd>${esc(c.rewardName)}</dd>
+        ${c.rewardDescription ? `<dt>${t("vf.desc")}</dt><dd style="font-weight:500">${esc(c.rewardDescription)}</dd>` : ""}
+        <dt>${t("vf.cost")}</dt><dd>${t("vf.points", pts(c.points))}</dd>
+        <dt>${t("vf.issued")}</dt><dd>${esc(fmtDateTime.format(new Date(c.date)))}</dd>
+        <dt>${t("vf.issuer")}</dt><dd>${esc(c.issuedBy || CONFIG.LEADER_NAME)}<span class="issuer-role">AWS Student Builder Group Leader</span></dd>
+      </dl>
+      <h3>${acts.length >= VOUCHER_ACTIVITIES ? t("vf.acts.last", VOUCHER_ACTIVITIES) : t("vf.acts")}</h3>
+      <ul class="vf-acts">${acts.map((a) => `
+        <li>
+          <div><span class="t">${esc(a.title)}</span><span class="d">${esc(fmtDate.format(new Date(a.date)))}</span></div>
+          <b class="num">+${pts(a.points)}</b>
+        </li>`).join("") || `<li><span class="d">${t("vf.noacts")}</span></li>`}
+      </ul>
+      ${acts.length >= VOUCHER_ACTIVITIES ? `<p class="note">${t("vf.capped", VOUCHER_ACTIVITIES)}</p>` : ""}
+      <p class="note">${t("vf.note")}</p>
+    </div>`;
+}
+
+function mountVerify(slot, prefill = "") {
+  slot.innerHTML = verifyBlock(prefill);
+  const form = slot.querySelector(".vf-form");
+  const input = slot.querySelector("#vf-input");
+  const box = slot.querySelector(".result");
+  const btn = form.querySelector("button");
+
+  async function run() {
+    const id = input.value.trim().toLowerCase();
+    if (!UUID_RE.test(id)) {
+      box.innerHTML = `<div class="error"><b>${t("vf.badformat")}</b><p>${t("vf.badformat.msg")}</p></div>`;
+      return;
+    }
+    btn.disabled = true; btn.textContent = t("vf.working");
+    try { renderVerifyResult(box, await api.verifyCoupon(id), id); }
+    catch (e) { box.innerHTML = errorBox(e.message, "none"); }
+    finally { btn.disabled = false; btn.textContent = t("vf.btn"); }
+  }
+  form.addEventListener("submit", (e) => { e.preventDefault(); run(); });
+  if (prefill) run();
+}
+
+/* ---------- Interacciones ---------- */
+function bindEvents() {
+  $("#logout").onclick = () => auth.logout();
+
+  document.addEventListener("click", (e) => {
+    const retry = e.target.closest("[data-retry]");
+    if (retry && loaders[retry.dataset.retry]) loaders[retry.dataset.retry]();
+    const more = e.target.closest('[data-more="my-redemptions"], [data-more="my-history"]');
+    if (more) {
+      more.disabled = true; more.textContent = t("loading");
+      (more.dataset.more === "my-redemptions" ? loaders.redemptions : loaders.history)(true);
+    }
+    const redeem = e.target.closest("[data-redeem]");
+    if (redeem) openRedeem(redeem.dataset.redeem);
+    const voucher = e.target.closest("[data-voucher]");
+    if (voucher) openVoucherById(voucher.dataset.voucher);
+    const desc = e.target.closest("[data-desc]");
+    if (desc) {
+      const id = desc.dataset.desc;
+      const open = !state.openDesc.has(id);
+      open ? state.openDesc.add(id) : state.openDesc.delete(id);
+      desc.setAttribute("aria-expanded", String(open));
+      document.getElementById(`desc-${id}`).hidden = !open;
+    }
+  });
+
+  document.querySelectorAll("[data-filter]").forEach((btn) => {
+    btn.onclick = () => {
+      state.filter = btn.dataset.filter;
+      document.querySelectorAll("[data-filter]").forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+      renderRewards();
+    };
+  });
+
+  $("#sub-switch").onclick = async () => {
+    if (state.subscribed === null) return;
+    const prev = state.subscribed;
+    state.subscribed = !prev; // optimista: el interruptor cambia de inmediato
+    renderSubscription();
+    $("#sub-switch").disabled = true;
+    try { state.subscribed = (await api.setSubscription(state.subscribed)).subscribed === true; }
+    catch { state.subscribed = prev; }
+    renderSubscription();
+  };
+
+  $("#voucher-print").onclick = printVoucher;
+  $("#voucher-close").onclick = () => $("#voucher-dialog").close();
+
+  document.querySelectorAll("[data-count-for]").forEach((el) => {
+    const field = document.getElementById(el.dataset.countFor);
+    field.addEventListener("input", () => (el.textContent = field.value.length));
+  });
+
+  setupForm("#suggestion-form", ["#sg-text"], "sg.ok", () => {
+    const text = $("#sg-text").value.trim();
+    // Misma regla que la Lambda de sugerencias; la validación definitiva es la del servidor
+    if (UNSAFE_TEXT.test(text)) throw new Error(t("sg.unsafe"));
+    return api.sendSuggestion({ text, anonymous: $("#sg-anon").checked });
+  });
+
+  setupForm("#message-form", ["#ms-subject", "#ms-text"], "ms.ok", () => {
+    const subject = $("#ms-subject").value.trim();
+    const text = $("#ms-text").value.trim();
+    // Mismas reglas que la Lambda del buzón; la validación definitiva es la del servidor
+    if (UNSAFE_TEXT.test(subject)) throw new Error(t("ms.unsafe.subject"));
+    if (UNSAFE_TEXT.test(text)) throw new Error(t("ms.unsafe.text"));
+    return api.sendLeaderMessage({ subject, text });
+  });
+}
+
+// okKey: clave del texto de éxito; el texto del botón se lee al enviar (respeta el idioma actual)
+function setupForm(formSel, fieldSels, okKey, send) {
+  const form = $(formSel);
+  const btn = form.querySelector("button[type=submit]");
+  const fb = form.querySelector(".feedback");
+  const fields = fieldSels.map((s) => $(s));
+  let sending = false;
+
+  const refresh = () => (btn.disabled = sending || fields.some((f) => !f.value.trim()));
+  fields.forEach((f) => f.addEventListener("input", () => { if (!sending) { fb.textContent = ""; fb.className = "feedback"; } refresh(); }));
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (btn.disabled) return;
+    sending = true; refresh();
+    const label = btn.textContent;
+    btn.textContent = t("sending");
+    try {
+      await send();
+      form.reset();
+      form.querySelectorAll("[data-count-for]").forEach((c) => (c.textContent = "0"));
+      fb.textContent = t(okKey); fb.className = "feedback ok";
+    } catch (err) {
+      // fetch lanza TypeError si no hay conexión; los demás errores traen el mensaje de la API
+      fb.textContent = err instanceof TypeError || !err.message ? t("send.fail") : err.message;
+      fb.className = "feedback bad";
+    } finally {
+      sending = false; btn.textContent = label; refresh();
+    }
+  });
+}
+
+/* ---------- Arranque ---------- */
+const ICON_LOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+const locked = (key) => `<div class="locked">${ICON_LOCK}<p>${esc(t(key))}</p><button class="btn" data-login>${t("login")}</button></div>`;
+
+function openVerify(prefill = "") {
+  const dlg = $("#verify-dialog");
+  mountVerify($("#verify-content"), prefill);
+  if (!dlg.open) dlg.showModal();
+  if (!prefill) $("#vf-input").focus();
+}
+
+// El enlace impreso en el vale (?verificar=<folio>) abre la verificación directamente
+function setupVerify(prefill) {
+  if (prefill) openVerify(prefill);
+}
+
+/* =====================================================================
+   PANEL DEL LÍDER (grupo Cognito "administrador")
+   La interfaz solo oculta/muestra; la seguridad real está en el backend.
+   ===================================================================== */
+const ADMIN_GROUP = "administrador";
+const adm = {
+  loaded: new Set(), rstatus: "PENDIENTE", redemptions: [], rdmCursor: null,
+  events: [], evStatus: "active", evCursor: null, // eventos: activos | eliminados
+  rewards: [], rwStatus: "active", rwCursor: null, // recompensas: visibles | ocultas
+};
+
+// Respuesta paginada {items, nextCursor}. Si la API devuelve otra forma, se muestra un error claro
+function asPage(res) {
+  if (!res || !Array.isArray(res.items)) {
+    throw new Error(t("err.format"));
+  }
+  return { items: res.items.filter(Boolean), nextCursor: res.nextCursor || null };
+}
+
+const moreButton = (kind, cursor) =>
+  cursor ? `<button class="btn-ghost" data-more="${kind}">${t("more")}</button>` : "";
+
+// "2026-10-20T16:00" (hora del centro de México, UTC-6 todo el año) -> ISO UTC
+const mxLocalToUtc = (v) => new Date(`${v}:00-06:00`).toISOString();
+// ISO UTC -> "2026-10-20T16:00" (hora del centro de México) para un input datetime-local
+const utcToMxLocal = (iso) => new Date(new Date(iso).getTime() - 6 * 3600 * 1000).toISOString().slice(0, 16);
+const mailOf = (raw) => { const v = raw.trim().toLowerCase(); return v.includes("@") ? v : `${v}@${CONFIG.INSTITUTIONAL_DOMAIN}`; };
+
+function openTab(name) {
+  document.querySelectorAll("[data-tab]").forEach((t) => t.setAttribute("aria-selected", String(t.dataset.tab === name)));
+  document.querySelectorAll("[data-panel]").forEach((p) => (p.hidden = p.dataset.panel !== name));
+  if (adm.loaded.has(name)) return;
+  adm.loaded.add(name);
+  ({ canjes: loadAdmRedemptions, eventos: loadAdmEvents, recompensas: loadAdmRewards,
+     sugerencias: loadAdmSuggestions, mensajes: loadAdmMessages })[name]();
+}
+
+/* ----- Canjes ----- */
+const RDM_ACTIONS = {
+  PENDIENTE: [["ENTREGADO", "a.rdm.markDelivered", "btn"], ["REEMBOLSADO", "a.rdm.refund", "btn-ghost"]],
+  VIGENTE: [["APLICADO", "a.rdm.markUsed", "btn"], ["REEMBOLSADO", "a.rdm.refund", "btn-ghost"]],
+};
+
+// append=false: primera página del estado actual; append=true: "Cargar más"
+async function loadAdmRedemptions(append = false) {
+  const box = $("#adm-redemptions");
+  if (!append) {
+    adm.redemptions = []; adm.rdmCursor = null;
+    box.innerHTML = skeleton(2, 170, "rdm-list");
+    $("#adm-redemptions-more").innerHTML = "";
+  }
+  try {
+    const page = asPage(await api.admin.redemptions(adm.rstatus, append ? adm.rdmCursor : null));
+    adm.redemptions = adm.redemptions.concat(page.items);
+    adm.rdmCursor = page.nextCursor;
+    renderAdmRedemptions();
+  } catch (e) {
+    if (append) { $("#adm-redemptions-more").innerHTML = `<p class="feedback bad">${esc(e.message)}</p>` + moreButton("redemptions", adm.rdmCursor); return; }
+    box.innerHTML = errorBox(e.message, "adm-redemptions");
+  }
+}
+
+function renderAdmRedemptions() {
+  const box = $("#adm-redemptions");
+  $("#adm-redemptions-more").innerHTML = moreButton("redemptions", adm.rdmCursor);
+  if (!adm.redemptions.length) {
+    box.innerHTML = `<div class="empty">${t("a.rdm.empty")}</div>`;
+    return;
+  }
+  box.innerHTML = `<ul class="rdm-list">${adm.redemptions.map((r, i) => {
+    const [label, cls] = statusOf(r.status);
+    const aws = r.type === "AWS";
+    const c = r.contact || {};
+    const acts = (RDM_ACTIONS[r.status] || []).map(([st, txt, bcls]) =>
+      `<button class="${bcls} btn-sm" data-rdm="${i}" data-to="${st}">${t(txt)}</button>`).join("");
+    return `
+      <li class="card rdm">
+        <div class="rdm-top">
+          <div><h3>${esc(r.rewardName)}</h3><span class="chip ${aws ? "chip-aws" : "chip-tec"}" style="margin-top:.35rem">${aws ? "AWS" : t("type.inst")}</span></div>
+          <span class="chip ${cls}">${label}</span>
+        </div>
+        <dl class="facts">
+          <dt>${t("a.rdm.student")}</dt><dd>${esc(r.email)}</dd>
+          ${aws ? `<dt>${t("a.rdm.name")}</dt><dd>${esc(c.fullName || "—")}</dd>
+          <dt>${t("a.rdm.phone")}</dt><dd>${c.phone ? `<a href="tel:${esc(c.phone)}">${esc(c.phone)}</a>` : "—"}</dd>
+          <dt>${t("a.rdm.semester")}</dt><dd>${c.semester ? t("a.rdm.semGroup", { sem: esc(c.semester), group: esc(c.group || "—") }) : "—"}</dd>` : `
+          <dt>${t("vf.folio")}</dt><dd class="uuid">${esc(r.id)}</dd>`}
+          <dt>${t("a.rdm.date")}</dt><dd>${esc(fmtDateTime.format(new Date(r.date)))}</dd>
+          <dt>${t("vf.cost")}</dt><dd>${pts(r.points)} pts</dd>
+          ${r.status === "REEMBOLSADO" ? `
+          <dt>${t("a.rdm.refundedAt")}</dt><dd>${r.refundedAt ? esc(fmtDateTime.format(new Date(r.refundedAt))) : "—"}</dd>
+          <dt>${t("a.rdm.returned")}</dt><dd>${t("a.rdm.returnedVal", pts(r.points))}</dd>` : ""}
+        </dl>
+        ${acts ? `<div class="actions">${acts}<p class="feedback" role="status"></p></div>` : ""}
+      </li>`;
+  }).join("")}</ul>`;
+}
+
+async function changeRedemption(btn) {
+  const r = adm.redemptions[Number(btn.dataset.rdm)];
+  const to = btn.dataset.to;
+  if (to === "REEMBOLSADO" && !(await confirmDialog({
+    title: t("a.rdm.refund.title"),
+    // Los canjes no se cancelan: el reembolso es la única forma de revertirlos
+    message: t("a.rdm.refund.msg", { points: pts(r.points), email: r.email, name: r.rewardName })
+      + (r.type === "INSTITUCIONAL" ? t("a.rdm.refund.inst") : ""),
+    confirmLabel: t("a.rdm.refund"),
+    cancelLabel: t("a.back"),
+    danger: true,
+  }))) return;
+  const card = btn.closest(".rdm");
+  const fb = card.querySelector(".feedback");
+  card.querySelectorAll("button").forEach((b) => (b.disabled = true));
+  try {
+    await api.admin.setRedemptionStatus(r, to);
+    adm.redemptions = adm.redemptions.filter((x) => x !== r);
+    renderAdmRedemptions();
+  } catch (e) {
+    fb.textContent = e.message; fb.className = "feedback bad";
+    card.querySelectorAll("button").forEach((b) => (b.disabled = false));
+  }
+}
+
+/* ----- Eventos y asistencia ----- */
+// append=false: primera página del filtro actual; append=true: "Cargar más"
+async function loadAdmEvents(append = false) {
+  if (!append) {
+    adm.events = []; adm.evCursor = null;
+    $("#adm-events").innerHTML = skeleton(1, 160, "");
+    $("#adm-events-more").innerHTML = "";
+  }
+  try {
+    const page = asPage(await api.admin.events(adm.evStatus, append ? adm.evCursor : null));
+    adm.events = adm.events.concat(page.items);
+    adm.evCursor = page.nextCursor;
+    renderAdmEvents();
+  } catch (e) {
+    if (append) { $("#adm-events-more").innerHTML = `<p class="feedback bad">${esc(e.message)}</p>` + moreButton("events", adm.evCursor); return; }
+    $("#adm-events").innerHTML = errorBox(e.message, "adm-events");
+    if (adm.evStatus === "active") $("#att-event").innerHTML = `<option value="">${t("a.att.loadfail")}</option>`;
+  }
+}
+
+function renderAdmEvents() {
+  const deletedView = adm.evStatus === "deleted";
+
+  // La lista de "Registrar asistencia" solo usa eventos activos ya cargados
+  if (!deletedView) {
+    const sel = $("#att-event");
+    const prev = sel.value;
+    sel.innerHTML = `<option value="">${t("a.att.choose")}</option>` + adm.events.map((e) =>
+      `<option value="${esc(e.id)}">${esc(fmtDate.format(new Date(e.date)))}: ${esc(e.title)} (+${pts(e.points)})</option>`).join("");
+    if (prev) sel.value = prev;
+  }
+
+  $("#adm-events-more").innerHTML = moreButton("events", adm.evCursor);
+  if (!adm.events.length) {
+    $("#adm-events").innerHTML = `<div class="empty">${t(deletedView ? "a.ev.emptyDeleted" : "a.ev.empty")}</div>`;
+    return;
+  }
+  $("#adm-events").innerHTML = `<div class="card tbl-wrap"><table class="tbl">
+    <thead><tr><th>${t("a.th.date")}</th><th>${t("a.th.event")}</th><th>${t("a.th.place")}</th><th>${t("a.th.points")}</th><th>${t("a.th.status")}</th><th></th></tr></thead>
+    <tbody>${adm.events.map((e, i) => `<tr>
+      <td data-label="${esc(t("a.th.date"))}">${esc(fmtDateTime.format(new Date(e.date)))}</td>
+      <td class="cell-main">${esc(e.title)}${e.description ? `<br><small style="color:var(--muted);font-weight:400">${esc(e.description)}</small>` : ""}</td>
+      <td data-label="${esc(t("a.th.place"))}">${esc(e.location)}</td>
+      <td class="num" data-label="${esc(t("a.th.points"))}">+${pts(e.points)}</td>
+      <td data-label="${esc(t("a.th.status"))}">${deletedView
+        ? `<span class="chip chip-bad">${t("a.chip.deleted")}</span>${e.deletedAt ? `<br><small style="color:var(--muted)">${esc(fmtDate.format(new Date(e.deletedAt)))}</small>` : ""}`
+        : `<span class="chip chip-ok">${t("a.chip.active")}</span>`}</td>
+      <td class="cell-actions" style="white-space:nowrap">${deletedView ? "" : `<button class="btn-ghost btn-sm" data-del-ev="${i}">${t("a.btn.delete")}</button> `}<button class="btn btn-sm" data-edit-ev="${i}">${t(deletedView ? "a.btn.editRestore" : "a.btn.edit")}</button><span class="feedback" style="display:block;margin-top:.25rem"></span></td>
+    </tr>`).join("")}</tbody></table></div>`;
+}
+
+/* ----- Edición completa de un evento ----- */
+function openEventEditor(index) {
+  const ev = adm.events[index];
+  const dlg = $("#event-edit-dialog");
+  const isDeleted = ev.deleted === true || adm.evStatus === "deleted";
+  $("#event-edit-content").innerHTML = `
+    <div class="dlg-top">
+      <h2 id="eve-title">${t("a.ev.edit")}</h2>
+      <button class="icon-close" type="button" data-close aria-label="${esc(t("close"))}">${ICON_X}</button>
+    </div>
+    <p>${t("a.ev.edit.sub")}</p>
+    <form id="event-edit-form" novalidate>
+      <label class="f" for="eve-name">${t("a.f.title")}</label>
+      <input id="eve-name" class="field" maxlength="120" minlength="3" required placeholder="${esc(t("a.ph.evtitle"))}" value="${esc(ev.title)}" />
+      <div class="row2 gap">
+        <div>
+          <label class="f" for="eve-date">${t("a.f.datetime")}</label>
+          <input id="eve-date" class="field" type="datetime-local" required value="${esc(utcToMxLocal(ev.date))}" />
+        </div>
+        <div>
+          <label class="f" for="eve-points">${t("a.f.points")}</label>
+          <input id="eve-points" class="field" type="number" min="0" max="10000" step="1" required placeholder="${esc(t("a.ph.evpoints"))}" value="${Number(ev.points)}" />
+        </div>
+      </div>
+      <label class="f gap" for="eve-location">${t("a.f.location")}</label>
+      <input id="eve-location" class="field" maxlength="120" minlength="2" required placeholder="${esc(t("a.ph.location"))}" value="${esc(ev.location)}" />
+      <label class="f gap" for="eve-desc">${t("vf.desc")}</label>
+      <textarea id="eve-desc" class="field" rows="3" maxlength="400" placeholder="${esc(t("a.ph.evdesc"))}">${esc(ev.description || "")}</textarea>
+      <label class="check gap"><input type="checkbox" id="eve-active" ${isDeleted ? "" : "checked"} /> ${t("a.ev.activeNow")}</label>
+      <div class="actions">
+        <p class="feedback" role="alert" style="margin-right:auto"></p>
+        <button type="button" class="btn-ghost" data-close>${t("cancel")}</button>
+        <button type="submit" class="btn">${t("a.saveChanges")}</button>
+      </div>
+    </form>`;
+
+  const form = $("#event-edit-form");
+  const fb = form.querySelector(".feedback");
+  const submit = form.querySelector("[type=submit]");
+  dlg.querySelectorAll("[data-close]").forEach((b) => (b.onclick = () => dlg.close()));
+
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+    if (!form.checkValidity()) { form.reportValidity(); return; }
+    submit.disabled = true; submit.textContent = t("a.saving"); fb.textContent = "";
+    try {
+      const patch = {
+        title: $("#eve-name").value.trim(),
+        date: mxLocalToUtc($("#eve-date").value),
+        location: $("#eve-location").value.trim(),
+        points: Number($("#eve-points").value),
+        description: $("#eve-desc").value.trim(), // vacío = quitar descripción
+        deleted: !$("#eve-active").checked,       // desmarcado = eliminado; marcado = restaurado
+      };
+      const updated = await api.admin.updateEvent(ev.id, patch);
+      // Si cambió de Activos a Eliminados (o al revés) sale de la lista que se está viendo
+      const belongs = adm.evStatus === "deleted" ? updated.deleted === true : updated.deleted !== true;
+      if (belongs) adm.events[index] = updated;
+      else adm.events.splice(index, 1);
+      if (adm.evStatus === "active") adm.events.sort((a, b) => b.date.localeCompare(a.date));
+      renderAdmEvents();
+      dlg.close();
+    } catch (err) {
+      fb.textContent = err.message || t("a.saveFail"); fb.className = "feedback bad";
+      submit.disabled = false; submit.textContent = t("a.saveChanges");
+    }
+  };
+
+  dlg.showModal();
+}
+
+async function deleteEvent(btn) {
+  const ev = adm.events[Number(btn.dataset.delEv)];
+  if (!(await confirmDialog({
+    title: t("a.ev.del.title"),
+    message: t("a.ev.del.msg", ev.title),
+    confirmLabel: t("a.btn.delete"),
+    danger: true,
+  }))) return;
+  const fb = btn.parentElement.querySelector(".feedback");
+  btn.disabled = true;
+  try {
+    await api.admin.deleteEvent(ev.id);
+    adm.events = adm.events.filter((x) => x !== ev);
+    if ($("#att-event").value === ev.id) loadAttendance("");
+    renderAdmEvents();
+  } catch (e) {
+    fb.textContent = e.message; fb.className = "feedback bad";
+    btn.disabled = false;
+  }
+}
+
+async function loadAttendance(eventId) {
+  const box = $("#att-list");
+  if (!eventId) { box.innerHTML = ""; return; }
+  box.innerHTML = `<p class="hint" style="margin-top:1rem">${t("a.att.loadingList")}</p>`;
+  try {
+    const list = await api.admin.attendance(eventId);
+    box.innerHTML = list.length
+      ? `<h3 style="margin-top:1.25rem;font-size:.95rem">${t("a.att.registered", list.length)}</h3>
+         <ul class="card rows" style="margin-top:.5rem;max-height:16rem;overflow:auto">${list.map((a) =>
+           `<li><div class="t"><p>${esc(a.email)}</p></div><small>${esc(fmtDate.format(new Date(a.date)))}</small></li>`).join("")}</ul>`
+      : `<p class="hint" style="margin-top:1rem">${t("a.att.none")}</p>`;
+  } catch (e) { box.innerHTML = `<p class="feedback bad" style="margin-top:1rem">${esc(e.message)}</p>`; }
+}
+
+/* ----- Recompensas ----- */
+// append=false: primera página del filtro actual; append=true: "Cargar más"
+async function loadAdmRewards(append = false) {
+  if (!append) {
+    adm.rewards = []; adm.rwCursor = null;
+    $("#adm-rewards").innerHTML = skeleton(1, 220, "");
+    $("#adm-rewards-more").innerHTML = "";
+  }
+  try {
+    const page = asPage(await api.admin.rewards(adm.rwStatus, append ? adm.rwCursor : null));
+    adm.rewards = adm.rewards.concat(page.items);
+    adm.rwCursor = page.nextCursor;
+    renderAdmRewards();
+  } catch (e) {
+    if (append) { $("#adm-rewards-more").innerHTML = `<p class="feedback bad">${esc(e.message)}</p>` + moreButton("rewards", adm.rwCursor); return; }
+    $("#adm-rewards").innerHTML = errorBox(e.message, "adm-rewards");
+  }
+}
+
+// Si una recompensa cambia de visibilidad, sale de la lista que se está viendo
+function dropIfMoved(r) {
+  const belongs = adm.rwStatus === "active" ? r.active !== false : r.active === false;
+  if (!belongs) adm.rewards = adm.rewards.filter((x) => x.id !== r.id);
+  return !belongs;
+}
+
+function renderAdmRewards() {
+  $("#adm-rewards-more").innerHTML = moreButton("rewards", adm.rwCursor);
+  if (!adm.rewards.length) {
+    $("#adm-rewards").innerHTML = `<div class="empty">${t(adm.rwStatus === "active" ? "a.rw.empty" : "a.rw.emptyHidden")}</div>`;
+    return;
+  }
+  $("#adm-rewards").innerHTML = `<div class="card tbl-wrap"><table class="tbl">
+    <thead><tr><th></th><th>${t("a.th.reward")}</th><th>${t("a.th.points")}</th><th>Stock</th><th>${t("a.th.visible")}</th><th></th></tr></thead>
+    <tbody>${adm.rewards.map((r, i) => `<tr class="rw-row" data-rw="${i}">
+      <td class="thumb-cell">${r.imageUrl
+        ? `<button type="button" class="zoom" data-zoom="${esc(assetUrl(r.imageUrl))}" data-caption="${esc(r.name)}" aria-label="${esc(t("a.rw.imageOf", r.name))}"><img class="thumb" src="${esc(assetUrl(r.imageUrl))}" alt="" loading="lazy" onerror="this.parentElement.replaceWith(Object.assign(document.createElement('span'),{className:'thumb thumb-empty'}))"></button>`
+        : `<span class="thumb thumb-empty"></span>`}</td>
+      <td class="cell-main"><b style="font-weight:600">${esc(r.name)}</b><br><span class="chip ${r.type === "AWS" ? "chip-aws" : "chip-tec"}" style="margin-top:.25rem">${r.type === "AWS" ? "AWS" : t("type.inst")}</span></td>
+      <td class="num" data-label="${esc(t("a.th.points"))}">${pts(r.points)}</td>
+      <td data-label="Stock"><input class="field rw-stock" type="number" min="0" value="${Number(r.stock) || 0}" aria-label="${esc(t("a.rw.stockOf", r.name))}"></td>
+      <td data-label="${esc(t("a.th.visible"))}"><input class="rw-active" type="checkbox" ${r.active !== false ? "checked" : ""} aria-label="${esc(t("a.rw.visibleAria"))}" style="width:18px;height:18px;accent-color:var(--tec)"></td>
+      <td class="cell-actions rw-actions"><button class="btn-ghost btn-sm" data-save-rw="${i}">${t("a.btn.save")}</button> <button class="btn btn-sm" data-edit-rw="${i}">${t("a.btn.edit")}</button><span class="feedback" style="display:block;margin-top:.25rem"></span></td>
+    </tr>`).join("")}</tbody></table></div>`;
+}
+
+async function saveReward(btn) {
+  const r = adm.rewards[Number(btn.dataset.saveRw)];
+  const row = btn.closest("tr");
+  const fb = row.querySelector(".feedback");
+  const stock = Number(row.querySelector(".rw-stock").value);
+  const active = row.querySelector(".rw-active").checked;
+  if (!Number.isInteger(stock) || stock < 0) { fb.textContent = t("a.rw.badStock"); fb.className = "feedback bad"; return; }
+  btn.disabled = true; fb.textContent = "";
+  try {
+    await api.admin.updateReward(r.id, { stock, active });
+    Object.assign(r, { stock, active });
+    if (dropIfMoved(r)) { renderAdmRewards(); return; } // pasó a Visibles/Ocultas
+    fb.textContent = t("a.rw.saved"); fb.className = "feedback ok";
+  } catch (e) { fb.textContent = e.message; fb.className = "feedback bad"; }
+  finally { btn.disabled = false; }
+}
+
+/* ----- Edición completa de una recompensa ----- */
+function openRewardEditor(index) {
+  const r = adm.rewards[index];
+  const dlg = $("#reward-edit-dialog");
+  $("#reward-edit-content").innerHTML = `
+    <div class="dlg-top">
+      <h2 id="rwe-title">${t("a.rw.edit")}</h2>
+      <button class="icon-close" type="button" data-close aria-label="${esc(t("close"))}">${ICON_X}</button>
+    </div>
+    <p>${t("a.rw.edit.sub")}</p>
+    <form id="reward-edit-form" novalidate>
+      <label class="f" for="rwe-name">${t("a.f.name")}</label>
+      <input id="rwe-name" class="field" maxlength="120" minlength="3" required placeholder="${esc(t("a.ph.rwname"))}" value="${esc(r.name)}" />
+      <label class="f gap" for="rwe-desc">${t("vf.desc")}</label>
+      <textarea id="rwe-desc" class="field" rows="3" maxlength="400" placeholder="${esc(t("a.ph.rwdesc"))}">${esc(r.description || "")}</textarea>
+      <div class="row2 gap">
+        <div>
+          <label class="f" for="rwe-points">${t("a.f.points")}</label>
+          <input id="rwe-points" class="field" type="number" min="1" max="100000" step="1" required placeholder="${esc(t("a.ph.rwpoints"))}" value="${Number(r.points)}" />
+        </div>
+        <div>
+          <label class="f" for="rwe-stock">Stock</label>
+          <input id="rwe-stock" class="field" type="number" min="0" max="10000" step="1" required placeholder="${esc(t("a.ph.rwstock"))}" value="${Number(r.stock) || 0}" />
+        </div>
+      </div>
+      <span class="f gap" id="rwe-type-label" style="display:block;font-size:.875rem;font-weight:600">${t("a.f.type")}</span>
+      <div class="seg" role="radiogroup" aria-labelledby="rwe-type-label">
+        <label><input type="radio" name="rwe-type" value="AWS" ${r.type === "AWS" ? "checked" : ""} /><span>AWS</span></label>
+        <label><input type="radio" name="rwe-type" value="INSTITUCIONAL" ${r.type !== "AWS" ? "checked" : ""} /><span>${t("type.inst")}</span></label>
+      </div>
+      <label class="check gap"><input type="checkbox" id="rwe-active" ${r.active !== false ? "checked" : ""} /> ${t("a.rw.visibleAria")}</label>
+
+      <span class="f gap" style="display:block;font-size:.875rem;font-weight:600">${t("a.f.image")}</span>
+      <div class="img-edit">
+        ${r.imageUrl ? `<img class="thumb" id="rwe-preview" src="${esc(assetUrl(r.imageUrl))}" alt="${esc(t("a.rw.current"))}">` : `<span class="thumb thumb-empty" id="rwe-preview"></span>`}
+        <div>
+          <label class="sr-only" for="rwe-image">${t("a.rw.change")}</label>
+          <input id="rwe-image" class="field" type="file" accept="image/png,image/jpeg,image/webp" />
+          <p class="hint">${t(r.imageUrl ? "a.rw.replace" : "a.rw.noImg")} ${t("a.rw.maxImg")}</p>
+          ${r.imageUrl ? `<label class="check"><input type="checkbox" id="rwe-remove" /> ${t("a.rw.removeImg")}</label>` : ""}
+        </div>
+      </div>
+
+      <div class="actions">
+        <p class="feedback" role="alert" style="margin-right:auto"></p>
+        <button type="button" class="btn-ghost" data-close>${t("cancel")}</button>
+        <button type="submit" class="btn">${t("a.saveChanges")}</button>
+      </div>
+    </form>`;
+
+  const form = $("#reward-edit-form");
+  const fb = form.querySelector(".feedback");
+  const submit = form.querySelector("[type=submit]");
+  const fileInput = $("#rwe-image");
+  const removeBox = $("#rwe-remove");
+  dlg.querySelectorAll("[data-close]").forEach((b) => (b.onclick = () => dlg.close()));
+
+  // Elegir archivo y quitar imagen se excluyen entre sí
+  fileInput.onchange = () => {
+    const file = fileInput.files[0];
+    if (removeBox) removeBox.checked = false;
+    if (file) {
+      const prev = $("#rwe-preview");
+      const url = URL.createObjectURL(file);
+      prev.outerHTML = `<img class="thumb" id="rwe-preview" src="${url}" alt="${esc(t("a.rw.newImg"))}">`;
+    }
+  };
+  if (removeBox) removeBox.onchange = () => {
+    if (removeBox.checked) fileInput.value = "";
+    $("#rwe-preview").style.opacity = removeBox.checked ? ".3" : "";
+  };
+
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+    if (!form.checkValidity()) { form.reportValidity(); return; }
+    submit.disabled = true; submit.textContent = t("a.saving"); fb.textContent = "";
+    try {
+      const file = fileInput.files[0];
+      checkImageFile(file);
+      const patch = {
+        name: $("#rwe-name").value.trim(),
+        description: $("#rwe-desc").value.trim(), // vacío = quitar descripción
+        points: Number($("#rwe-points").value),
+        stock: Number($("#rwe-stock").value),
+        type: form.querySelector("[name=rwe-type]:checked").value,
+        active: $("#rwe-active").checked,
+      };
+      if (file) patch.imageUrl = await uploadImage(file);
+      else if (removeBox && removeBox.checked) patch.imageUrl = null;
+
+      const updated = await api.admin.updateReward(r.id, patch);
+      adm.rewards[index] = updated;
+      dropIfMoved(updated);
+      renderAdmRewards();
+      dlg.close();
+    } catch (err) {
+      fb.textContent = err.message || t("a.saveFail"); fb.className = "feedback bad";
+      submit.disabled = false; submit.textContent = t("a.saveChanges");
+    }
+  };
+
+  dlg.showModal();
+}
+
+function openImage(src, caption) {
+  const dlg = $("#image-dialog");
+  $("#image-full").src = src;
+  $("#image-full").alt = caption ? `Imagen de ${caption}` : "";
+  $("#image-caption").textContent = caption || "";
+  dlg.showModal();
+}
+
+/* ----- Confirmaciones y avisos ----- */
+// Promesa que se resuelve en true (Aceptar) o false (Cancelar, ✕, Esc o clic fuera)
+function confirmDialog({ title, message, confirmLabel = t("ok"), cancelLabel = t("cancel"), danger = false }) {
+  const dlg = $("#confirm-dialog");
+  $("#cf-title").textContent = title;
+  $("#cf-message").textContent = message;
+  const ok = $("#cf-ok");
+  ok.textContent = confirmLabel;
+  ok.className = danger ? "btn btn-danger" : "btn";
+  const cancel = $("#cf-cancel");
+  cancel.hidden = cancelLabel === null; // sin botón Cancelar = aviso simple
+  if (cancelLabel !== null) cancel.textContent = cancelLabel;
+
+  return new Promise((resolve) => {
+    const finish = (value) => {
+      dlg.removeEventListener("click", onClick);
+      dlg.removeEventListener("close", onClose);
+      if (dlg.open) dlg.close();
+      resolve(value);
+    };
+    const onClick = (e) => {
+      if (e.target === dlg) return finish(false); // clic fuera
+      const b = e.target.closest("[data-cf]");
+      if (b) finish(b.dataset.cf === "ok");
+    };
+    const onClose = () => finish(false); // Esc
+    dlg.addEventListener("click", onClick);
+    dlg.addEventListener("close", onClose);
+    dlg.showModal();
+    (danger ? cancel : ok).focus(); // en acciones destructivas el foco inicia en Cancelar
+  });
+}
+
+const alertDialog = (title, message) => confirmDialog({ title, message, confirmLabel: t("understood"), cancelLabel: null });
+
+function checkImageFile(file) {
+  if (!file) return;
+  if (!["image/png", "image/jpeg", "image/webp"].includes(file.type)) throw new Error(t("a.img.type"));
+  if (file.size > 5 * 1024 * 1024) throw new Error(t("a.img.size"));
+}
+
+// Sube la imagen directo a S3 con la URL prefirmada (POST con condiciones de tipo y tamaño)
+async function uploadImage(file) {
+  const { upload, imageUrl } = await api.admin.uploadUrl(file.type, file.name, file.size);
+  const form = new FormData();
+  Object.entries(upload.fields).forEach(([k, v]) => form.append(k, v));
+  form.append("file", file); // S3 exige que el archivo vaya al final
+  const r = await fetch(upload.url, { method: "POST", body: form });
+  if (!r.ok) throw new Error(t("a.img.upload"));
+  return imageUrl;
+}
+
+/* ----- Buzón de sugerencias ----- */
+adm.suggestions = [];
+adm.sgFilter = "TODAS";
+
+// append=false: primera página; append=true: "Cargar más"
+async function loadAdmSuggestions(append = false) {
+  if (!append) {
+    adm.suggestions = []; adm.sgCursor = null;
+    $("#adm-suggestions").innerHTML = skeleton(1, 160, "");
+    $("#adm-suggestions-more").innerHTML = "";
+  }
+  try {
+    const page = asPage(await api.admin.suggestions(append ? adm.sgCursor : null));
+    adm.suggestions = adm.suggestions.concat(page.items);
+    adm.sgCursor = page.nextCursor;
+    renderAdmSuggestions();
+  } catch (e) {
+    if (append) { $("#adm-suggestions-more").innerHTML = `<p class="feedback bad">${esc(e.message)}</p>` + moreButton("suggestions", adm.sgCursor); return; }
+    $("#adm-suggestions").innerHTML = errorBox(e.message, "adm-suggestions");
+  }
+}
+
+function renderAdmSuggestions() {
+  $("#adm-suggestions-more").innerHTML = moreButton("suggestions", adm.sgCursor);
+  const list = adm.suggestions.filter((sg) =>
+    adm.sgFilter === "TODAS" || (adm.sgFilter === "ANON" ? !sg.email : !!sg.email));
+  if (!list.length) {
+    $("#adm-suggestions").innerHTML = `<div class="empty">${t(adm.suggestions.length ? "a.sg.emptyFilter" : "a.sg.empty")}</div>`;
+    return;
+  }
+  $("#adm-suggestions").innerHTML = `<p class="hint" style="margin-bottom:.75rem">${t("a.sg.count", { n: list.length, more: !!adm.sgCursor })}</p>` +
+    list.map((sg) => `
+      <article class="card msg">
+        <div class="msg-top">
+          <span>${sg.email ? esc(sg.email) : `<span class="chip chip-wait">${t("a.sg.anonChip")}</span>`}</span>
+          <span>${esc(fmtDateTime.format(new Date(sg.date)))}</span>
+        </div>
+        <p class="body">${esc(sg.text)}</p>
+      </article>`).join("");
+}
+
+/* ----- Mensajes ----- */
+// append=false: primera página; append=true: "Cargar más"
+async function loadAdmMessages(append = false) {
+  if (!append) {
+    adm.messages = []; adm.msgCursor = null;
+    $("#adm-messages").innerHTML = skeleton(1, 160, "");
+    $("#adm-messages-more").innerHTML = "";
+  }
+  try {
+    const page = asPage(await api.admin.messages(append ? adm.msgCursor : null));
+    adm.messages = adm.messages.concat(page.items);
+    adm.msgCursor = page.nextCursor;
+    renderAdmMessages();
+  } catch (e) {
+    if (append) { $("#adm-messages-more").innerHTML = `<p class="feedback bad">${esc(e.message)}</p>` + moreButton("messages", adm.msgCursor); return; }
+    $("#adm-messages").innerHTML = errorBox(e.message, "adm-messages");
+  }
+}
+
+function renderAdmMessages() {
+  $("#adm-messages-more").innerHTML = moreButton("messages", adm.msgCursor);
+  const list = adm.messages;
+  $("#adm-messages").innerHTML = list.length ? list.map((m) => `
+    <article class="card msg">
+      <div class="msg-top"><span>${esc(m.email)}</span><span>${esc(fmtDateTime.format(new Date(m.date)))}</span></div>
+      <h3>${esc(m.subject)}</h3>
+      <p class="body">${esc(m.text)}</p>
+      <a class="link" style="display:inline-block;margin-top:.5rem" href="mailto:${esc(m.email)}?subject=${encodeURIComponent("Re: " + m.subject)}">${t("a.ms.reply")}</a>
+    </article>`).join("") : `<div class="empty">${t("a.ms.empty")}</div>`;
+}
+
+/* ----- Formularios y eventos del panel ----- */
+function adminForm(sel, handler) {
+  const form = $(sel);
+  const btn = form.querySelector("[type=submit]");
+  const fb = form.querySelector(".feedback");
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!form.checkValidity()) { form.reportValidity(); return; }
+    const label = btn.textContent;
+    btn.disabled = true; btn.textContent = t("a.saving"); fb.textContent = ""; fb.className = "feedback";
+    try {
+      const msg = await handler(form);
+      fb.textContent = msg; fb.className = "feedback ok";
+    } catch (err) {
+      fb.textContent = err.message || t("a.saveFail"); fb.className = "feedback bad";
+    } finally { btn.disabled = false; btn.textContent = label; }
+  });
+}
+
+function bindAdmin() {
+  $("#logout").onclick = () => auth.logout();
+
+  document.querySelectorAll("[data-tab]").forEach((t) => (t.onclick = () => openTab(t.dataset.tab)));
+
+  document.querySelectorAll("[data-rstatus]").forEach((b) => (b.onclick = () => {
+    adm.rstatus = b.dataset.rstatus;
+    document.querySelectorAll("[data-rstatus]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+    loadAdmRedemptions();
+  }));
+
+  document.addEventListener("click", (e) => {
+    const rd = e.target.closest("[data-rdm]");
+    if (rd) changeRedemption(rd);
+    const sv = e.target.closest("[data-save-rw]");
+    if (sv) saveReward(sv);
+    const more = e.target.closest("[data-more]");
+    if (more) {
+      more.disabled = true; more.textContent = t("loading");
+      ({ rewards: loadAdmRewards, events: loadAdmEvents, redemptions: loadAdmRedemptions, suggestions: loadAdmSuggestions, messages: loadAdmMessages })[more.dataset.more](true);
+    }
+    const rws = e.target.closest("[data-rws]");
+    if (rws && rws.dataset.rws !== adm.rwStatus) {
+      adm.rwStatus = rws.dataset.rws;
+      document.querySelectorAll("[data-rws]").forEach((b) => b.setAttribute("aria-pressed", String(b === rws)));
+      loadAdmRewards();
+    }
+    const evs = e.target.closest("[data-evs]");
+    if (evs && evs.dataset.evs !== adm.evStatus) {
+      adm.evStatus = evs.dataset.evs;
+      document.querySelectorAll("[data-evs]").forEach((b) => b.setAttribute("aria-pressed", String(b === evs)));
+      loadAdmEvents();
+    }
+    const ee = e.target.closest("[data-edit-ev]");
+    if (ee) openEventEditor(Number(ee.dataset.editEv));
+    const de = e.target.closest("[data-del-ev]");
+    if (de) deleteEvent(de);
+    const ed = e.target.closest("[data-edit-rw]");
+    if (ed) openRewardEditor(Number(ed.dataset.editRw));
+    const retry = e.target.closest("[data-retry]");
+    if (retry) ({ "adm-redemptions": loadAdmRedemptions, "adm-events": loadAdmEvents,
+                  "adm-rewards": loadAdmRewards, "adm-suggestions": loadAdmSuggestions,
+                  "adm-messages": loadAdmMessages })[retry.dataset.retry]?.();
+  });
+
+  adminForm("#event-form", async (f) => {
+    const ev = {
+      title: $("#ev-title-in").value.trim(),
+      date: mxLocalToUtc($("#ev-date").value),
+      location: $("#ev-location").value.trim(),
+      points: Number($("#ev-points").value),
+      description: $("#ev-desc").value.trim() || undefined,
+    };
+    await api.admin.createEvent(ev);
+    f.reset();
+    if (adm.evStatus === "active") loadAdmEvents();
+    return t("a.ev.created");
+  });
+
+  $("#att-event").onchange = (e) => loadAttendance(e.target.value);
+
+  document.querySelectorAll("[data-sgf]").forEach((b) => (b.onclick = () => {
+    adm.sgFilter = b.dataset.sgf;
+    document.querySelectorAll("[data-sgf]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+    renderAdmSuggestions();
+  }));
+
+  adminForm("#att-form", async () => {
+    const eventId = $("#att-event").value;
+    const entries = [...new Set($("#att-emails").value.split(/[\s,;]+/).filter(Boolean).map(mailOf))];
+    const valid = entries.filter(isInstitutional);
+    const invalid = entries.filter((x) => !isInstitutional(x));
+    if (!valid.length) throw new Error(t("a.att.noValid"));
+    if (valid.length > 200) throw new Error(t("a.att.max"));
+    const res = await api.admin.addAttendance(eventId, valid);
+    const added = res.added || [];
+    const skipped = res.skipped || [];
+    const noAccount = res.notRegistered || [];
+    const badFormat = invalid.concat(res.invalid || []);
+    // En el cuadro quedan solo los que hay que revisar
+    $("#att-emails").value = badFormat.concat(noAccount).join("\n");
+    loadAttendance(eventId);
+    return [
+      t("a.att.added", added.length),
+      skipped.length ? t("a.att.skipped", skipped.length) : "",
+      noAccount.length ? t("a.att.noAccount", noAccount.length) : "",
+      badFormat.length ? t("a.att.bad", badFormat.length) : "",
+      noAccount.length || badFormat.length ? t("a.att.left") : "",
+    ].filter(Boolean).join(" ");
+  });
+
+  adminForm("#reward-form", async (f) => {
+    const file = $("#rw-image").files[0];
+    checkImageFile(file);
+    const rw = {
+      name: $("#rw-name").value.trim(),
+      description: $("#rw-desc").value.trim() || undefined,
+      points: Number($("#rw-points").value),
+      stock: Number($("#rw-stock").value),
+      type: f.querySelector("[name=rw-type]:checked").value,
+      imageUrl: file ? await uploadImage(file) : undefined,
+    };
+    await api.admin.createReward(rw);
+    f.reset();
+    if (adm.rwStatus === "active") loadAdmRewards(); // las nuevas se crean visibles
+    return t("a.rw.created");
+  });
+}
+
+function startAdmin(email, prefill) {
+  isAdmin = true;
+  $(".notice-wrap").hidden = true; // el aviso es para alumnos y visitantes
+  $("#screen").hidden = true;
+  $("#app").hidden = false;
+  $("#member-view").hidden = true;
+  $("#admin-view").hidden = false;
+  $(".points").hidden = true; // el líder no tiene saldo de puntos
+  // En lugar del correo se muestra el rol (se traduce solo con data-i18n); el correo queda como tooltip
+  const el = $("#user-email");
+  el.dataset.i18n = "a.role";
+  el.textContent = t("a.role");
+  el.title = email;
+  document.title = t("a.doc.title");
+  bindAdmin();
+  openTab("canjes");
+  setupVerify(prefill);
+}
+
+// Con sesión: carga todas las secciones
+function start(email, prefill) {
+  $("#screen").hidden = true;
+  $("#app").hidden = false;
+  const el = $("#user-email");
+  el.textContent = email;
+  el.title = email;
+  renderIntros();
+  bindEvents();
+  Object.values(loaders).forEach((load) => load());
+  setupVerify(prefill);
+}
+
+// Sin sesión: no carga datos; cada sección invita a iniciar sesión
+function startGuest(prefill) {
+  state.guest = true;
+  // Sin sesión las secciones públicas son una vista previa
+  renderIntros();
+
+  $("#screen").hidden = true;
+  $("#app").hidden = false;
+  $(".who").hidden = true;
+  $("#guest-actions").hidden = false;
+  $(".head").classList.add("guest"); // acomodo del encabezado sin sesión en celular
+  $("#sub-card").hidden = true; // suscribirse requiere sesión
+
+  // Públicas: cualquiera (incluidos docentes) ve la actividad del grupo.
+  // Sin perfil no hay saldo, así que las recompensas no muestran Canjear ni progreso.
+  bindEvents();
+  loaders.events();
+  loaders.rewards();
+
+  $("#suggestion-form").hidden = true;
+  $("#message-form").hidden = true;
+  renderGuestLocks();
+
+  setupVerify(prefill);
+}
+
+// Panel del líder: vuelve a pintar las pestañas ya cargadas con los datos en memoria
+function renderAdmin() {
+  if (adm.loaded.has("canjes")) renderAdmRedemptions();
+  if (adm.loaded.has("eventos")) {
+    renderAdmEvents();
+    const sel = $("#att-event").value;
+    if (sel) loadAttendance(sel); // la lista de asistentes viene de la API
+  }
+  if (adm.loaded.has("recompensas")) renderAdmRewards();
+  if (adm.loaded.has("sugerencias")) renderAdmSuggestions();
+  if (adm.loaded.has("mensajes")) renderAdmMessages();
+}
+
+// Introducciones de Eventos y Recompensas (sin sesión son una vista previa)
+function renderIntros() {
+  $("#ev-intro").textContent = t(state.guest ? "ev.intro.guest" : "ev.intro");
+  $("#rw-intro").textContent = t(state.guest ? "rw.intro.guest" : "rw.intro");
+}
+
+// Secciones que requieren sesión
+function renderGuestLocks() {
+  $("#redemptions").innerHTML = locked("lock.rd");
+  $("#history").innerHTML = locked("lock.hi");
+  $("#sg-locked").innerHTML = locked("lock.sg");
+  $("#ms-locked").innerHTML = locked("lock.ms");
+}
+
+/* ---------- Cambio de idioma ---------- */
+let isAdmin = false;
+function setLang(lang) {
+  if (lang === LANG || !I18N[lang]) return;
+  LANG = lang;
+  try { localStorage.setItem(LANG_KEY, lang); } catch {}
+  makeFormatters();
+  applyStaticTexts();
+  document.title = t(isAdmin ? "a.doc.title" : "doc.title");
+  if ($("#app").hidden) return; // aún en la pantalla de carga
+  if (isAdmin) return renderAdmin();
+  // Se vuelve a pintar con los datos ya cargados, sin pedirlos otra vez a la API
+  renderIntros();
+  renderSubscription();
+  renderProfile();
+  if (state.events) renderEvents(state.events);
+  renderRewards();
+  if (state.guest) renderGuestLocks();
+  else {
+    renderRedemptions();
+    if (state.historyLoaded) renderHistory();
+  }
+}
+
+async function boot() {
+  applyStaticTexts();
+  document.title = t("doc.title");
+  document.querySelectorAll("[data-lang]").forEach((b) => (b.onclick = () => setLang(b.dataset.lang)));
+
+  // Cerrar el visor al tocar fuera de la imagen
+  $("#image-dialog").addEventListener("click", (e) => { if (e.target.id === "image-dialog") e.target.close(); });
+
+  // Cualquier botón "Iniciar sesión" lleva al login de Cognito
+  document.addEventListener("click", (e) => {
+    if (e.target.closest("[data-login]")) auth.login();
+    const zoom = e.target.closest("[data-zoom]");
+    if (zoom) openImage(zoom.dataset.zoom, zoom.dataset.caption);
+    if (e.target.closest("[data-close-image]")) $("#image-dialog").close();
+    if (e.target.closest("[data-verify]")) openVerify();
+    if (e.target.closest("[data-close-verify]")) $("#verify-dialog").close();
+  });
+
+  api = httpApi;
+  const prefill = new URLSearchParams(location.search).get("verificar") || "";
+  const returning = new URLSearchParams(location.search).has("code");
+
+  if (returning) showScreen(t("screen.signing"));
+  try {
+    await auth.handleCallback();
+  } catch (e) {
+    return showScreen(t("screen.fail"), e.message, { label: t("screen.retry"), onClick: auth.login });
+  }
+
+  const token = await auth.getIdToken();
+  if (!token) return startGuest(prefill);
+
+  const claims = auth.decodeJwt(token);
+  const email = claims.email || "";
+  const groups = claims["cognito:groups"] || [];
+
+  // Administrador: panel del AWS Student Group Leader
+  if (groups.includes(ADMIN_GROUP)) return startAdmin(email, prefill);
+
+  // Miembro: vista de alumno. El correo institucional lo validan los triggers de Cognito
+  start(email, prefill);
+}
+
+boot();
+</script>
+</body>
+</html>
